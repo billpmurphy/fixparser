@@ -1,4 +1,5 @@
 mod types;
+mod encoder;
 mod decoder;
 mod preprocess;
 

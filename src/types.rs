@@ -138,31 +138,6 @@ impl MonthYear {
     }
 }
 
-/// ISO 4217 code representing a currency type.
-///
-/// Used in FIX Protocol Versions 4.2, 4.3, 4.4, 5.0 SP1, and 5.0 SP2
-pub type Currency = String;
-
-/// ISO 3166 country code representing a country.
-///
-/// Used in FIX Protocol Versions 4.3, 4.4, 5.0, 5.0 SP1, and 5.0 SP2
-pub type Country = String;
-
-/// Reuters Exchange code representing a market or exchange.
-///
-/// Used in FIX Protocol Version 4.2.
-pub type ReutersExchange = String;
-
-/// ISO 10383 Market Identifier Code (MIC) representing a market or exchange.
-///
-/// Used in FIX Protocol Versions 4.3, 4.4, 5.0, 5.0 SP1, and 5.0 SP2
-pub type MICExchange = String;
-
-/// ISO 639-1 code representing a language.
-///
-/// Used in FIX Protocol Version 5.0 SP2
-pub type Language = String;
-
 /// UTC date.
 ///
 /// Used in FIX Protocol Versions 4.0, 4.1, 4.2, 4.3, 4.4, 5.0, 5.0 SP1, and 5.0 SP2
@@ -191,7 +166,7 @@ pub type TZTimestamp = String;
 /// String datatype consisting of one or more space-separated Strings.
 ///
 /// Used in FIX Protocol Versions 4.2, 4.3, 4.4, 5.0 SP1, and 5.0 SP2
-pub type MutipleValueString = String;
+pub type MultipleValueString = String;
 
 /// String datatype consisting of one or more space-separated characters.
 ///

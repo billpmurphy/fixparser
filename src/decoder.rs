@@ -48,6 +48,7 @@ pub fn decode_fixchar(&msg: &u8) -> Result<u8> {
     }
 }
 
+
 #[inline]
 pub fn decode_fixstring(msg: &[u8]) -> Result<&str> {
     match str::from_utf8(msg) {
@@ -57,18 +58,25 @@ pub fn decode_fixstring(msg: &[u8]) -> Result<&str> {
 }
 
 
-pub fn decode_dayofmonth(msg: &[u8; 2]) -> Result<i32> {
+#[inline]
+pub fn decode_dayofmonth(msg: &[u8; 2]) -> Result<u8> {
     unimplemented!()
 }
 
+
+#[inline]
 pub fn decode_monthyear(msg: &[u8; 6]) -> Result<MonthYear>{
     unimplemented!()
 }
 
+
+#[inline]
 pub fn decode_qty(msg: &[u8]) -> Result<Qty> {
     unimplemented!()
 }
 
+
+#[inline]
 pub fn decode_tenor(msg: &[u8]) -> Result<Tenor> {
     match msg[0] {
         b'D' => Ok(Tenor::Day(try!(decode_u32(&msg[1..])))),
@@ -78,6 +86,7 @@ pub fn decode_tenor(msg: &[u8]) -> Result<Tenor> {
         _ => Err(DecodeError::InvalidChar(msg[0]))
     }
 }
+
 
 #[cfg(test)]
 mod tests {

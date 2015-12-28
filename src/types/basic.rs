@@ -1,26 +1,3 @@
-/// FIX Protocol Verison.
-#[derive(Clone, Debug, PartialEq, Eq)]
-pub enum FIXVersion {
-    /// FIX Protocol Version 4.0.
-    FIX40,
-    /// FIX Protocol Version 4.1.
-    FIX41,
-    /// FIX Protocol Version 4.2.
-    FIX42,
-    /// FIX Protocol Version 4.3.
-    FIX43,
-    /// FIX Protocol Version 4.4.
-    FIX44,
-    /// FIX Protocol Version 5.0.
-    FIX50,
-    /// FIX Protocol Version 5.0, Service Pack 1.
-    FIX50SP1,
-    /// FIX Protocol Version 5.0, Service Pack 2.
-    FIX50SP2,
-    /// FIX Transport Protocol 1.1.
-    FIXT11,
-}
-
 /// Raw byte array datatype.
 ///
 /// Used in FIX Protocol Versions 4.0, 4.1, 4.2, 4.3, 4.4, 5.0, 5.0 SP1, and 5.0 SP2
@@ -50,7 +27,6 @@ pub type Price = f64;
 ///
 /// Used in FIX Protocol Versions 4.2, 4.3, 4.4, 5.0, 5.0 SP1, and 5.0 SP2
 pub type PriceOffset = f64;
-
 
 /// Represents a whole number of securities or fractional quantity of securities.
 ///
@@ -106,7 +82,6 @@ pub type FIXBoolean = bool;
 ///
 /// Used in FIX Protocol Versions 4.0, 4.1, 4.2, 4.3, 4.4, 5.0, 5.0 SP1, and 5.0 SP2
 pub type FIXChar = u8;
-
 
 /// Multi-byte string. Cannot contain the separator character (SOH).
 ///

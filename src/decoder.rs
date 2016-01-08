@@ -11,6 +11,18 @@ pub enum DecodeError {
 
 pub type Result<T> = result::Result<T, DecodeError>;
 
+/// Find and parse the next tag in a slice of bytes representing a raw FIX message.
+/// TODO: make more efficient
+/*
+pub fn parse_next_tag(msg: &[u8]) -> Result<TagValue, PreprocessError>{
+    let eq = try!(msg.iter().position(|&n| n == EQ).ok_or(PreprocessError::Invalid));
+    let end = try!(msg.iter().position(|&n| n == SOH).ok_or(PreprocessError::Invalid));
+    let tag = try!(decode_u32(&msg[0..eq]).map_err(|_| PreprocessError::Invalid));
+    let tag = 0;
+    Ok(TagValue { tag : tag, value: &msg[eq..end], len: end })
+}
+*/
+
 
 #[inline]
 pub fn decode_bool(&msg: &u8) -> Result<bool> {

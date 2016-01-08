@@ -8,9 +8,9 @@ use messages::*;
 
 #[test]
 fn test_preprocess() {
-    assert_eq!(preprocess(IEMPTY), Err(PreprocessError::Incomplete));
-    assert_eq!(preprocess(ITOO_SHORT), Err(PreprocessError::Incomplete));
-    assert_eq!(preprocess(IMISSING_FINAL_SOH), Err(PreprocessError::Invalid));
+    assert!(preprocess(IEMPTY).is_err());
+    assert!(preprocess(ITOO_SHORT).is_err());
+    assert!(preprocess(IMISSING_FINAL_SOH).is_err());
 
     assert!(preprocess(FIX41_LOGON).is_ok());
     assert!(preprocess(FIX41_HEARTBEAT).is_ok());

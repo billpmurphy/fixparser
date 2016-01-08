@@ -1025,4 +1025,10 @@ mod tests {
         assert_eq!(decode_country(b"US").unwrap(), Country::US);
         assert!(decode_country(b"UX").is_err());
     }
+
+    #[test]
+    fn test_encode_country() {
+        assert_eq!(encode_country(Country::US), *b"US");
+        assert_eq!(encode_country(Country::ZW), *b"ZW");
+    }
 }

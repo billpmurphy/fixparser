@@ -53,13 +53,13 @@ pub fn encode_fixstring(string: &str) -> Result<&[u8]> {
 
 
 #[inline]
-pub fn encode_dayofmonth(dom: u8) -> Result<[u8; 2]> {
+pub fn encode_dayofmonth(dom: u8) -> [u8; 2] {
     unimplemented!()
 }
 
 
 #[inline]
-pub fn encode_monthyear(my: MonthYear) -> Result<[u8; 6]>{
+pub fn encode_monthyear(my: MonthYear) -> [u8; 6] {
     unimplemented!()
 }
 

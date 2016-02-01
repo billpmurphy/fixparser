@@ -1,7 +1,9 @@
 /// Preprocess a raw FIX message.
 use decoder::decode_u32;
-use protocol::{FIXVersion, MIN_MESSAGE_LEN, SOH, EQ, MsgBody, MsgLen, Checksum, compute_checksum};
+use protocol::{FIXVersion, MsgBody, MsgLen, Checksum, compute_checksum};
 
+/// The minimum possible length of a FIX message.
+const MIN_MESSAGE_LEN: usize = 22;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum PreprocessError {
@@ -23,7 +25,7 @@ fn parse_tag_8(msg: &[u8]) -> Result<(FIXVersion, usize), PreprocessError> {
 
     // Find the protocol verison.
     // For version 4.X, the tag 8 will be 8=FIX.4.X|
-    if &msg[5..8] == b".4." && msg[9] == SOH {
+    if &msg[5..8] == b".4." && msg[9] == b'\x01' {
         match msg[8] {
             b'0' => Ok((FIXVersion::FIX40, 10)),
             b'1' => Ok((FIXVersion::FIX41, 10)),
@@ -51,7 +53,7 @@ fn parse_tag_9(msg: &[u8]) -> Result<(MsgLen, usize), PreprocessError> {
         let mut msg_len = 0;
         let mut body_start_index = 3;
         for &byte in &msg[2..] {
-            if byte == SOH {
+            if byte == b'\x01' {
                 return if body_start_index == 3 {
                     Err(PreprocessError::Invalid)
                 }
@@ -72,7 +74,7 @@ fn parse_tag_9(msg: &[u8]) -> Result<(MsgLen, usize), PreprocessError> {
 }
 
 fn parse_tag_10(msg: &[u8]) -> Result<Checksum, PreprocessError> {
-    if msg.len() != 7 || &msg[0..3] != b"10=" || msg[6] != SOH
+    if msg.len() != 7 || &msg[0..3] != b"10=" || msg[6] != b'\x01'
         || msg[3] < b'0' || msg[3] > b'2'
         || msg[4] < b'0' || msg[4] > b'9'
         || msg[5] < b'0' || msg[5] > b'9'  {
@@ -94,9 +96,9 @@ pub fn preprocess(msg: &[u8]) -> Result<MsgBody, PreprocessError> {
     }
 
     let (version, tag_9_start_index) = try!(parse_tag_8(&msg));
-    let (body_len, body_start_offset) = try!(parse_tag_9(&msg[tag_9_start_index..]));
+    let (body_len, tag_9_len) = try!(parse_tag_9(&msg[tag_9_start_index..]));
 
-    let body_start_index = body_start_offset + tag_9_start_index;
+    let body_start_index = tag_9_start_index + tag_9_len;
     let tag_10_start_index = body_start_index + body_len;
 
     let declared_checksum = try!(parse_tag_10(&msg[tag_10_start_index..]));

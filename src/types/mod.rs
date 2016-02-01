@@ -4,10 +4,14 @@ mod currency;
 mod language;
 mod mic_exchange;
 mod rt_exchange;
+mod fixfield;
 
+pub use self::fixfield::FIXField;
 pub use self::basic::*;
-pub use self::country::*;
-pub use self::currency::*;
-pub use self::language::*;
-pub use self::mic_exchange::*;
-pub use self::rt_exchange::*;
+
+// Large enum types
+pub use self::country::Country;
+pub use self::currency::Currency;
+pub use self::language::Language;
+pub use self::mic_exchange::MICExchange;
+pub use self::rt_exchange::ReutersExchange;

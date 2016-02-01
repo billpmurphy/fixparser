@@ -1,17 +1,17 @@
-/// SOH control character
-pub const SOH: u8 = 1;
-
-/// Equals "=" character
-pub const EQ: u8 = 61;
-
-/// The minimum possible length of a FIX message.
-pub const MIN_MESSAGE_LEN: usize = 22;
-
 /// The length in bytes of a raw FIX Message.
 pub type MsgLen = usize;
 
 /// The checksum of a raw FIX message.
 pub type Checksum = u8;
+
+
+/// Compute a FIX checksum given a slice of the header and body of the message, from the message
+/// start to the delimiter before the `10` tag (inclusive).
+#[inline]
+pub fn compute_checksum(head_and_body: &[u8]) -> u8 {
+    head_and_body.iter().fold(0, |a, &x| a.wrapping_add(x))
+}
+
 
 /// FIX Protocol Verison.
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -57,12 +57,4 @@ pub struct MsgBody<'a> {
     pub version: FIXVersion,
     /// Slice of the body of the message.
     pub body: &'a[u8],
-}
-
-
-/// Compute a FIX checksum given a slice of the header and body of the message, from the message
-/// start to the delimiter before the `10` tag (inclusive).
-#[inline]
-pub fn compute_checksum(body: &[u8]) -> u8 {
-    body.iter().fold(0, |a, &x| a.wrapping_add(x))
 }

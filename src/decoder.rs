@@ -25,7 +25,7 @@ pub fn parse_next_tag(msg: &[u8]) -> Result<TagValue, PreprocessError>{
 
 
 #[inline]
-pub fn decode_bool(&msg: &u8) -> Result<bool> {
+pub fn decode_bool(msg: u8) -> Result<bool> {
     match msg {
         b'Y' => Ok(true),
         b'N' => Ok(false),
@@ -53,7 +53,7 @@ pub fn decode_u32(msg: &[u8]) -> Result<u32> {
 
 
 #[inline]
-pub fn decode_fixchar(&msg: &u8) -> Result<u8> {
+pub fn decode_fixchar(msg: u8) -> Result<u8> {
     match msg {
         b'\x01' => Err(DecodeError::InvalidChar(b'\x01')),
         ch => Ok(ch)
@@ -72,6 +72,11 @@ pub fn decode_fixstring(msg: &[u8]) -> Result<&str> {
 
 #[inline]
 pub fn decode_dayofmonth(msg: &[u8; 2]) -> Result<u8> {
+    let month_num = try!(decode_u32(msg));
+    if month_num > 31 {
+    }
+    else {
+    }
     unimplemented!()
 }
 
@@ -108,13 +113,13 @@ mod tests {
     fn test_decode_bool() {
         for i in 0..255 {
             if i == b'Y' {
-                assert_eq!(decode_bool(&i), Ok(true));
+                assert_eq!(decode_bool(i), Ok(true));
             }
             else if i == b'N' {
-                assert_eq!(decode_bool(&i), Ok(false));
+                assert_eq!(decode_bool(i), Ok(false));
             }
             else {
-                assert!(decode_bool(&i).is_err());
+                assert!(decode_bool(i).is_err());
             }
         }
     }
@@ -135,10 +140,10 @@ mod tests {
     fn test_decode_fixchar() {
         for i in 0..255 {
             if i == b'\x01' {
-                assert!(decode_fixchar(&i).is_err());
+                assert!(decode_fixchar(i).is_err());
             }
             else {
-                assert_eq!(decode_fixchar(&i), Ok(i));
+                assert_eq!(decode_fixchar(i), Ok(i));
             }
         }
     }

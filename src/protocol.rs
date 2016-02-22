@@ -1,3 +1,5 @@
+/// Types and traits for the FIX Protocol.
+
 /// The length in bytes of a raw FIX Message.
 pub type MsgLen = usize;
 
@@ -5,8 +7,9 @@ pub type MsgLen = usize;
 pub type Checksum = u8;
 
 
-/// Compute a FIX checksum given a slice of the header and body of the message, from the message
-/// start to the delimiter before the `10` tag (inclusive).
+/// Compute a FIX checksum given a slice of the header and body of the message.
+///
+/// The FIX checksum is the sum of the bytes in the header and body of the message modulo 256.
 #[inline]
 pub fn compute_checksum(head_and_body: &[u8]) -> u8 {
     head_and_body.iter().fold(0, |a, &x| a.wrapping_add(x))
@@ -57,4 +60,39 @@ pub struct MsgBody<'a> {
     pub version: FIXVersion,
     /// Slice of the body of the message.
     pub body: &'a[u8],
+    /// The message checksum.
+    pub checksum: u8,
+}
+
+
+/// Trait for value types related to the FIX protocol that can be encoded/decoded to bytearrays.
+pub trait FIXValue where Self: Sized {
+    /// Decode a value from a slice of bytes.
+    fn from_bytes(bytes: &[u8]) -> Option<Self>;
+
+    /// Encode a value and append it to a byte vector.
+    fn to_bytes(&self, mut v: &mut Vec<u8>);
+}
+
+
+/// Common interface for all FIX message types.
+pub trait FIXMessage where Self: Sized {
+    /// Return true if the message is a Heartbeat, and false otherwise.
+    //fn is_heartbeat(&self) -> bool;
+
+    /// Return true if the message is a TestRequest, and false otherwise.
+    //fn is_test_request(&self) -> bool;
+
+    /// Create a empty Heartbeat message.
+    fn make_empty_heartbeat() -> Self;
+
+    /// Create a Heartbeat message to respond to the message.
+    ///
+    /// If the message is a TestRequest message and contains a TestRequestID, the Heartbeat
+    /// response will also contain the TestRequestID. Otherwise, an empty Heartbeat will be
+    /// returned.
+    fn make_heartbeat_response(&self) -> Self;
+
+    /// Create a TestRequest message with an optional TestRequestID.
+    fn make_test_request(test_request_id: Option<&str>) -> Self;
 }

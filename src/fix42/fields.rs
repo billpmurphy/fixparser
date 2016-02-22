@@ -1,4 +1,4 @@
-use types::FIXField;
+use protocol::FIXValue;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Adjustment {
@@ -7,7 +7,7 @@ pub enum Adjustment {
     Correction = b'3' as isize,
 }
 
-impl FIXField for Adjustment {
+impl FIXValue for Adjustment {
     fn from_bytes(bytes: &[u8]) -> Option<Adjustment> {
         match bytes {
             b"1" => Some(Adjustment::Cancel),
@@ -30,7 +30,7 @@ pub enum AdvSide {
     Cross = b'X' as isize,
 }
 
-impl FIXField for AdvSide {
+impl FIXValue for AdvSide {
     fn from_bytes(bytes: &[u8]) -> Option<AdvSide> {
         match bytes {
             b"B" => Some(AdvSide::Buy),
@@ -53,7 +53,7 @@ pub enum AdvTransType {
     Replace = b'R' as isize,
 }
 
-impl FIXField for AdvTransType {
+impl FIXValue for AdvTransType {
     fn from_bytes(bytes: &[u8]) -> Option<AdvTransType> {
         match bytes {
             b"C" => Some(AdvTransType::Cancel),
@@ -74,7 +74,7 @@ pub enum AggregatedBook {
     Yes = b'Y' as isize,
 }
 
-impl FIXField for AggregatedBook {
+impl FIXValue for AggregatedBook {
     fn from_bytes(bytes: &[u8]) -> Option<AggregatedBook> {
         match bytes {
             b"N" => Some(AggregatedBook::No),
@@ -95,7 +95,7 @@ pub enum AllocHandlInst {
     ForwardAndMatch = b'3' as isize,
 }
 
-impl FIXField for AllocHandlInst {
+impl FIXValue for AllocHandlInst {
     fn from_bytes(bytes: &[u8]) -> Option<AllocHandlInst> {
         match bytes {
             b"1" => Some(AllocHandlInst::Match),
@@ -116,7 +116,7 @@ pub enum AllocLinkType {
     FXSwap = b'1' as isize,
 }
 
-impl FIXField for AllocLinkType {
+impl FIXValue for AllocLinkType {
     fn from_bytes(bytes: &[u8]) -> Option<AllocLinkType> {
         match bytes {
             b"0" => Some(AllocLinkType::FXNetting),
@@ -142,7 +142,7 @@ pub enum AllocRejCode {
     Other = b'7' as isize,
 }
 
-impl FIXField for AllocRejCode {
+impl FIXValue for AllocRejCode {
     fn from_bytes(bytes: &[u8]) -> Option<AllocRejCode> {
         match bytes {
             b"0" => Some(AllocRejCode::UnknownAccount),
@@ -170,7 +170,7 @@ pub enum AllocStatus {
     Received = b'3' as isize,
 }
 
-impl FIXField for AllocStatus {
+impl FIXValue for AllocStatus {
     fn from_bytes(bytes: &[u8]) -> Option<AllocStatus> {
         match bytes {
             b"0" => Some(AllocStatus::Accepted),
@@ -196,7 +196,7 @@ pub enum AllocTransType {
     CalculatedWithoutPreliminary = b'5' as isize,
 }
 
-impl FIXField for AllocTransType {
+impl FIXValue for AllocTransType {
     fn from_bytes(bytes: &[u8]) -> Option<AllocTransType> {
         match bytes {
             b"0" => Some(AllocTransType::New),
@@ -231,7 +231,7 @@ pub enum BasisPxType {
     Others = b'Z' as isize,
 }
 
-impl FIXField for BasisPxType {
+impl FIXValue for BasisPxType {
     fn from_bytes(bytes: &[u8]) -> Option<BasisPxType> {
         match bytes {
             b"2" => Some(BasisPxType::ClosingPriceAtMorningSession),
@@ -269,7 +269,7 @@ pub enum Benchmark {
     SixMoLibor = b'9' as isize,
 }
 
-impl FIXField for Benchmark {
+impl FIXValue for Benchmark {
     fn from_bytes(bytes: &[u8]) -> Option<Benchmark> {
         match bytes {
             b"1" => Some(Benchmark::Curve),
@@ -296,7 +296,7 @@ pub enum BidRequestTransType {
     No = b'N' as isize,
 }
 
-impl FIXField for BidRequestTransType {
+impl FIXValue for BidRequestTransType {
     fn from_bytes(bytes: &[u8]) -> Option<BidRequestTransType> {
         match bytes {
             b"C" => Some(BidRequestTransType::Cancel),
@@ -320,7 +320,7 @@ pub enum BusinessRejectReason {
     ConditionallyRequiredFieldMissing = b'5' as isize,
 }
 
-impl FIXField for BusinessRejectReason {
+impl FIXValue for BusinessRejectReason {
     fn from_bytes(bytes: &[u8]) -> Option<BusinessRejectReason> {
         match bytes {
             b"0" => Some(BusinessRejectReason::Other),
@@ -345,7 +345,7 @@ pub enum CommType {
     Absolute = b'3' as isize,
 }
 
-impl FIXField for CommType {
+impl FIXValue for CommType {
     fn from_bytes(bytes: &[u8]) -> Option<CommType> {
         match bytes {
             b"1" => Some(CommType::PerShare),
@@ -369,7 +369,7 @@ pub enum CorporateAction {
     ExInterest = b'E' as isize,
 }
 
-impl FIXField for CorporateAction {
+impl FIXValue for CorporateAction {
     fn from_bytes(bytes: &[u8]) -> Option<CorporateAction> {
         match bytes {
             b"A" => Some(CorporateAction::ExDividend),
@@ -392,7 +392,7 @@ pub enum CoveredOrUncovered {
     Uncovered = b'1' as isize,
 }
 
-impl FIXField for CoveredOrUncovered {
+impl FIXValue for CoveredOrUncovered {
     fn from_bytes(bytes: &[u8]) -> Option<CoveredOrUncovered> {
         match bytes {
             b"0" => Some(CoveredOrUncovered::Covered),
@@ -412,7 +412,7 @@ pub enum CustomerOrFirm {
     Firm = b'1' as isize,
 }
 
-impl FIXField for CustomerOrFirm {
+impl FIXValue for CustomerOrFirm {
     fn from_bytes(bytes: &[u8]) -> Option<CustomerOrFirm> {
         match bytes {
             b"0" => Some(CustomerOrFirm::Customer),
@@ -434,7 +434,7 @@ pub enum CxlRejReason {
     OrderAlreadyInPendingCancelOrPendingReplaceStatus = b'3' as isize,
 }
 
-impl FIXField for CxlRejReason {
+impl FIXValue for CxlRejReason {
     fn from_bytes(bytes: &[u8]) -> Option<CxlRejReason> {
         match bytes {
             b"0" => Some(CxlRejReason::TooLateToCancel),
@@ -456,7 +456,7 @@ pub enum CxlRejResponseTo {
     OrderCancelReplaceRequest = b'2' as isize,
 }
 
-impl FIXField for CxlRejResponseTo {
+impl FIXValue for CxlRejResponseTo {
     fn from_bytes(bytes: &[u8]) -> Option<CxlRejResponseTo> {
         match bytes {
             b"1" => Some(CxlRejResponseTo::OrderCancelRequest),
@@ -480,7 +480,7 @@ pub enum DKReason {
     Other = b'Z' as isize,
 }
 
-impl FIXField for DKReason {
+impl FIXValue for DKReason {
     fn from_bytes(bytes: &[u8]) -> Option<DKReason> {
         match bytes {
             b"A" => Some(DKReason::UnknownSymbol),
@@ -504,7 +504,7 @@ pub enum DeleteReason {
     Error = b'1' as isize,
 }
 
-impl FIXField for DeleteReason {
+impl FIXValue for DeleteReason {
     fn from_bytes(bytes: &[u8]) -> Option<DeleteReason> {
         match bytes {
             b"0" => Some(DeleteReason::Cancelation),
@@ -528,7 +528,7 @@ pub enum DiscretionInst {
     RelatedToLastTradePrice = b'5' as isize,
 }
 
-impl FIXField for DiscretionInst {
+impl FIXValue for DiscretionInst {
     fn from_bytes(bytes: &[u8]) -> Option<DiscretionInst> {
         match bytes {
             b"0" => Some(DiscretionInst::RelatedToDisplayedPrice),
@@ -552,7 +552,7 @@ pub enum DueToRelated {
     Yes = b'Y' as isize,
 }
 
-impl FIXField for DueToRelated {
+impl FIXValue for DueToRelated {
     fn from_bytes(bytes: &[u8]) -> Option<DueToRelated> {
         match bytes {
             b"N" => Some(DueToRelated::No),
@@ -573,7 +573,7 @@ pub enum EmailType {
     AdminReply = b'2' as isize,
 }
 
-impl FIXField for EmailType {
+impl FIXValue for EmailType {
     fn from_bytes(bytes: &[u8]) -> Option<EmailType> {
         match bytes {
             b"0" => Some(EmailType::New),
@@ -599,7 +599,7 @@ pub enum EncryptMethod {
     PemDesMd5 = b'6' as isize,
 }
 
-impl FIXField for EncryptMethod {
+impl FIXValue for EncryptMethod {
     fn from_bytes(bytes: &[u8]) -> Option<EncryptMethod> {
         match bytes {
             b"0" => Some(EncryptMethod::None),
@@ -624,7 +624,7 @@ pub enum ExchangeForPhysical {
     Yes = b'Y' as isize,
 }
 
-impl FIXField for ExchangeForPhysical {
+impl FIXValue for ExchangeForPhysical {
     fn from_bytes(bytes: &[u8]) -> Option<ExchangeForPhysical> {
         match bytes {
             b"N" => Some(ExchangeForPhysical::No),
@@ -671,7 +671,7 @@ pub enum ExecInst {
     PegToVwap = b'W' as isize,
 }
 
-impl FIXField for ExecInst {
+impl FIXValue for ExecInst {
     fn from_bytes(bytes: &[u8]) -> Option<ExecInst> {
         match bytes {
             b"0" => Some(ExecInst::StayOnOfferside),
@@ -722,7 +722,7 @@ pub enum ExecRestatementReason {
     PartialDeclineOfOrderqty = b'5' as isize,
 }
 
-impl FIXField for ExecRestatementReason {
+impl FIXValue for ExecRestatementReason {
     fn from_bytes(bytes: &[u8]) -> Option<ExecRestatementReason> {
         match bytes {
             b"0" => Some(ExecRestatementReason::GtCorporateAction),
@@ -748,7 +748,7 @@ pub enum ExecTransType {
     Status = b'3' as isize,
 }
 
-impl FIXField for ExecTransType {
+impl FIXValue for ExecTransType {
     fn from_bytes(bytes: &[u8]) -> Option<ExecTransType> {
         match bytes {
             b"0" => Some(ExecTransType::New),
@@ -783,7 +783,7 @@ pub enum ExecType {
     PendingReplace = b'E' as isize,
 }
 
-impl FIXField for ExecType {
+impl FIXValue for ExecType {
     fn from_bytes(bytes: &[u8]) -> Option<ExecType> {
         match bytes {
             b"0" => Some(ExecType::New),
@@ -815,7 +815,7 @@ pub enum FinancialStatus {
     Bankrupt = b'1' as isize,
 }
 
-impl FIXField for FinancialStatus {
+impl FIXValue for FinancialStatus {
     fn from_bytes(bytes: &[u8]) -> Option<FinancialStatus> {
         match bytes {
             b"1" => Some(FinancialStatus::Bankrupt),
@@ -834,7 +834,7 @@ pub enum ForexReq {
     Yes = b'Y' as isize,
 }
 
-impl FIXField for ForexReq {
+impl FIXValue for ForexReq {
     fn from_bytes(bytes: &[u8]) -> Option<ForexReq> {
         match bytes {
             b"N" => Some(ForexReq::No),
@@ -855,7 +855,7 @@ pub enum GTBookingInst {
     AccumulateUntilVerballyNotifiedOtherwise = b'2' as isize,
 }
 
-impl FIXField for GTBookingInst {
+impl FIXValue for GTBookingInst {
     fn from_bytes(bytes: &[u8]) -> Option<GTBookingInst> {
         match bytes {
             b"0" => Some(GTBookingInst::BookOutAllTradesOnDayOfExecution),
@@ -876,7 +876,7 @@ pub enum GapFillFlag {
     Yes = b'Y' as isize,
 }
 
-impl FIXField for GapFillFlag {
+impl FIXValue for GapFillFlag {
     fn from_bytes(bytes: &[u8]) -> Option<GapFillFlag> {
         match bytes {
             b"N" => Some(GapFillFlag::No),
@@ -900,7 +900,7 @@ pub enum HaltReasonChar {
     EquipmentChangeover = b'X' as isize,
 }
 
-impl FIXField for HaltReasonChar {
+impl FIXValue for HaltReasonChar {
     fn from_bytes(bytes: &[u8]) -> Option<HaltReasonChar> {
         match bytes {
             b"D" => Some(HaltReasonChar::NewsDissemination),
@@ -925,7 +925,7 @@ pub enum HandlInst {
     ManualOrderBestExecution = b'3' as isize,
 }
 
-impl FIXField for HandlInst {
+impl FIXValue for HandlInst {
     fn from_bytes(bytes: &[u8]) -> Option<HandlInst> {
         match bytes {
             b"1" => Some(HandlInst::AutomatedExecutionOrderPrivateNoBrokerIntervention),
@@ -953,7 +953,7 @@ pub enum IDSource {
     ConsolidatedTapeAssociation = b'9' as isize,
 }
 
-impl FIXField for IDSource {
+impl FIXValue for IDSource {
     fn from_bytes(bytes: &[u8]) -> Option<IDSource> {
         match bytes {
             b"1" => Some(IDSource::Cusip),
@@ -980,7 +980,7 @@ pub enum IOINaturalFlag {
     Yes = b'Y' as isize,
 }
 
-impl FIXField for IOINaturalFlag {
+impl FIXValue for IOINaturalFlag {
     fn from_bytes(bytes: &[u8]) -> Option<IOINaturalFlag> {
         match bytes {
             b"N" => Some(IOINaturalFlag::No),
@@ -1001,7 +1001,7 @@ pub enum IOIQltyInd {
     Medium = b'M' as isize,
 }
 
-impl FIXField for IOIQltyInd {
+impl FIXValue for IOIQltyInd {
     fn from_bytes(bytes: &[u8]) -> Option<IOIQltyInd> {
         match bytes {
             b"H" => Some(IOIQltyInd::High),
@@ -1036,7 +1036,7 @@ pub enum IOIQualifier {
     PreOpen = b'Z' as isize,
 }
 
-impl FIXField for IOIQualifier {
+impl FIXValue for IOIQualifier {
     fn from_bytes(bytes: &[u8]) -> Option<IOIQualifier> {
         match bytes {
             b"A" => Some(IOIQualifier::AllOrNone),
@@ -1071,7 +1071,7 @@ pub enum IOIShares {
     Small = b'S' as isize,
 }
 
-impl FIXField for IOIShares {
+impl FIXValue for IOIShares {
     fn from_bytes(bytes: &[u8]) -> Option<IOIShares> {
         match bytes {
             b"L" => Some(IOIShares::Large),
@@ -1093,7 +1093,7 @@ pub enum IOITransType {
     Replace = b'R' as isize,
 }
 
-impl FIXField for IOITransType {
+impl FIXValue for IOITransType {
     fn from_bytes(bytes: &[u8]) -> Option<IOITransType> {
         match bytes {
             b"C" => Some(IOITransType::Cancel),
@@ -1114,7 +1114,7 @@ pub enum InViewOfCommon {
     Yes = b'Y' as isize,
 }
 
-impl FIXField for InViewOfCommon {
+impl FIXValue for InViewOfCommon {
     fn from_bytes(bytes: &[u8]) -> Option<InViewOfCommon> {
         match bytes {
             b"N" => Some(InViewOfCommon::No),
@@ -1134,7 +1134,7 @@ pub enum IncTaxInd {
     Gross = b'2' as isize,
 }
 
-impl FIXField for IncTaxInd {
+impl FIXValue for IncTaxInd {
     fn from_bytes(bytes: &[u8]) -> Option<IncTaxInd> {
         match bytes {
             b"1" => Some(IncTaxInd::Net),
@@ -1156,7 +1156,7 @@ pub enum LastCapacity {
     Principal = b'4' as isize,
 }
 
-impl FIXField for LastCapacity {
+impl FIXValue for LastCapacity {
     fn from_bytes(bytes: &[u8]) -> Option<LastCapacity> {
         match bytes {
             b"1" => Some(LastCapacity::Agent),
@@ -1180,7 +1180,7 @@ pub enum LiquidityIndType {
     Other = b'4' as isize,
 }
 
-impl FIXField for LiquidityIndType {
+impl FIXValue for LiquidityIndType {
     fn from_bytes(bytes: &[u8]) -> Option<LiquidityIndType> {
         match bytes {
             b"1" => Some(LiquidityIndType::FiveDayMovingAverage),
@@ -1202,7 +1202,7 @@ pub enum ListExecInstType {
     WaitForExecuteInstruction = b'2' as isize,
 }
 
-impl FIXField for ListExecInstType {
+impl FIXValue for ListExecInstType {
     fn from_bytes(bytes: &[u8]) -> Option<ListExecInstType> {
         match bytes {
             b"1" => Some(ListExecInstType::Immediate),
@@ -1222,7 +1222,7 @@ pub enum LocateReqd {
     Yes = b'Y' as isize,
 }
 
-impl FIXField for LocateReqd {
+impl FIXValue for LocateReqd {
     fn from_bytes(bytes: &[u8]) -> Option<LocateReqd> {
         match bytes {
             b"N" => Some(LocateReqd::No),
@@ -1250,7 +1250,7 @@ pub enum MDEntryType {
     TradingSessionVwapPrice = b'9' as isize,
 }
 
-impl FIXField for MDEntryType {
+impl FIXValue for MDEntryType {
     fn from_bytes(bytes: &[u8]) -> Option<MDEntryType> {
         match bytes {
             b"0" => Some(MDEntryType::Bid),
@@ -1285,7 +1285,7 @@ pub enum MDReqRejReason {
     UnsupportedMdentrytype = b'8' as isize,
 }
 
-impl FIXField for MDReqRejReason {
+impl FIXValue for MDReqRejReason {
     fn from_bytes(bytes: &[u8]) -> Option<MDReqRejReason> {
         match bytes {
             b"0" => Some(MDReqRejReason::UnknownSymbol),
@@ -1313,7 +1313,7 @@ pub enum MDUpdateAction {
     Delete = b'2' as isize,
 }
 
-impl FIXField for MDUpdateAction {
+impl FIXValue for MDUpdateAction {
     fn from_bytes(bytes: &[u8]) -> Option<MDUpdateAction> {
         match bytes {
             b"0" => Some(MDUpdateAction::New),
@@ -1334,7 +1334,7 @@ pub enum MDUpdateType {
     IncrementalRefresh = b'1' as isize,
 }
 
-impl FIXField for MDUpdateType {
+impl FIXValue for MDUpdateType {
     fn from_bytes(bytes: &[u8]) -> Option<MDUpdateType> {
         match bytes {
             b"0" => Some(MDUpdateType::FullRefresh),
@@ -1356,7 +1356,7 @@ pub enum MessageEncoding {
     Utf8,
 }
 
-impl FIXField for MessageEncoding {
+impl FIXValue for MessageEncoding {
     fn from_bytes(bytes: &[u8]) -> Option<MessageEncoding> {
         match bytes {
             b"EUC-JP" => Some(MessageEncoding::EucJp),
@@ -1390,7 +1390,7 @@ pub enum MiscFeeType {
     ConsumptionTax = b'9' as isize,
 }
 
-impl FIXField for MiscFeeType {
+impl FIXValue for MiscFeeType {
     fn from_bytes(bytes: &[u8]) -> Option<MiscFeeType> {
         match bytes {
             b"1" => Some(MiscFeeType::Regulatory),
@@ -1417,7 +1417,7 @@ pub enum MsgDirection {
     Send = b'S' as isize,
 }
 
-impl FIXField for MsgDirection {
+impl FIXValue for MsgDirection {
     fn from_bytes(bytes: &[u8]) -> Option<MsgDirection> {
         match bytes {
             b"R" => Some(MsgDirection::Receive),
@@ -1481,7 +1481,7 @@ pub enum MsgType {
     QuoteCancel = b'Z' as isize,
 }
 
-impl FIXField for MsgType {
+impl FIXValue for MsgType {
     fn from_bytes(bytes: &[u8]) -> Option<MsgType> {
         match bytes {
             b"0" => Some(MsgType::Heartbeat),
@@ -1546,7 +1546,7 @@ pub enum MultiLegReportingType {
     MultiLegSecurity = b'3' as isize,
 }
 
-impl FIXField for MultiLegReportingType {
+impl FIXValue for MultiLegReportingType {
     fn from_bytes(bytes: &[u8]) -> Option<MultiLegReportingType> {
         match bytes {
             b"1" => Some(MultiLegReportingType::SingleSecurity),
@@ -1567,7 +1567,7 @@ pub enum NetGrossInd {
     Gross = b'2' as isize,
 }
 
-impl FIXField for NetGrossInd {
+impl FIXValue for NetGrossInd {
     fn from_bytes(bytes: &[u8]) -> Option<NetGrossInd> {
         match bytes {
             b"1" => Some(NetGrossInd::Net),
@@ -1587,7 +1587,7 @@ pub enum NotifyBrokerOfCredit {
     Yes = b'Y' as isize,
 }
 
-impl FIXField for NotifyBrokerOfCredit {
+impl FIXValue for NotifyBrokerOfCredit {
     fn from_bytes(bytes: &[u8]) -> Option<NotifyBrokerOfCredit> {
         match bytes {
             b"N" => Some(NotifyBrokerOfCredit::No),
@@ -1607,7 +1607,7 @@ pub enum OpenClose {
     Open = b'O' as isize,
 }
 
-impl FIXField for OpenClose {
+impl FIXValue for OpenClose {
     fn from_bytes(bytes: &[u8]) -> Option<OpenClose> {
         match bytes {
             b"C" => Some(OpenClose::Close),
@@ -1628,7 +1628,7 @@ pub enum OpenCloseSettleFlag {
     DeliverySettlementPrice = b'2' as isize,
 }
 
-impl FIXField for OpenCloseSettleFlag {
+impl FIXValue for OpenCloseSettleFlag {
     fn from_bytes(bytes: &[u8]) -> Option<OpenCloseSettleFlag> {
         match bytes {
             b"0" => Some(OpenCloseSettleFlag::DailyOpen),
@@ -1656,7 +1656,7 @@ pub enum OrdRejReason {
     StaleOrder = b'8' as isize,
 }
 
-impl FIXField for OrdRejReason {
+impl FIXValue for OrdRejReason {
     fn from_bytes(bytes: &[u8]) -> Option<OrdRejReason> {
         match bytes {
             b"0" => Some(OrdRejReason::BrokerOption),
@@ -1696,7 +1696,7 @@ pub enum OrdStatus {
     PendingReplace = b'E' as isize,
 }
 
-impl FIXField for OrdStatus {
+impl FIXValue for OrdStatus {
     fn from_bytes(bytes: &[u8]) -> Option<OrdStatus> {
         match bytes {
             b"0" => Some(OrdStatus::New),
@@ -1746,7 +1746,7 @@ pub enum OrdType {
     Pegged = b'P' as isize,
 }
 
-impl FIXField for OrdType {
+impl FIXValue for OrdType {
     fn from_bytes(bytes: &[u8]) -> Option<OrdType> {
         match bytes {
             b"1" => Some(OrdType::Market),
@@ -1783,7 +1783,7 @@ pub enum PossDupFlag {
     Yes = b'Y' as isize,
 }
 
-impl FIXField for PossDupFlag {
+impl FIXValue for PossDupFlag {
     fn from_bytes(bytes: &[u8]) -> Option<PossDupFlag> {
         match bytes {
             b"N" => Some(PossDupFlag::No),
@@ -1803,7 +1803,7 @@ pub enum PossResend {
     Yes = b'Y' as isize,
 }
 
-impl FIXField for PossResend {
+impl FIXValue for PossResend {
     fn from_bytes(bytes: &[u8]) -> Option<PossResend> {
         match bytes {
             b"N" => Some(PossResend::No),
@@ -1824,7 +1824,7 @@ pub enum PriceType {
     FixedAmount = b'3' as isize,
 }
 
-impl FIXField for PriceType {
+impl FIXValue for PriceType {
     fn from_bytes(bytes: &[u8]) -> Option<PriceType> {
         match bytes {
             b"1" => Some(PriceType::Percentage),
@@ -1850,7 +1850,7 @@ pub enum ProcessCode {
     PlanSponsor = b'6' as isize,
 }
 
-impl FIXField for ProcessCode {
+impl FIXValue for ProcessCode {
     fn from_bytes(bytes: &[u8]) -> Option<ProcessCode> {
         match bytes {
             b"0" => Some(ProcessCode::Regular),
@@ -1876,7 +1876,7 @@ pub enum ProgRptReqs {
     RealTimeExecutionReports = b'3' as isize,
 }
 
-impl FIXField for ProgRptReqs {
+impl FIXValue for ProgRptReqs {
     fn from_bytes(bytes: &[u8]) -> Option<ProgRptReqs> {
         match bytes {
             b"1" => Some(ProgRptReqs::BuysideExplicitlyRequestsStatusUsingStatusrequest),
@@ -1897,7 +1897,7 @@ pub enum PutOrCall {
     Call = b'1' as isize,
 }
 
-impl FIXField for PutOrCall {
+impl FIXValue for PutOrCall {
     fn from_bytes(bytes: &[u8]) -> Option<PutOrCall> {
         match bytes {
             b"0" => Some(PutOrCall::Put),
@@ -1921,7 +1921,7 @@ pub enum QuoteAckStatus {
     Rejected = b'5' as isize,
 }
 
-impl FIXField for QuoteAckStatus {
+impl FIXValue for QuoteAckStatus {
     fn from_bytes(bytes: &[u8]) -> Option<QuoteAckStatus> {
         match bytes {
             b"0" => Some(QuoteAckStatus::Accepted),
@@ -1947,7 +1947,7 @@ pub enum QuoteCancelType {
     CancelForAllQuotes = b'4' as isize,
 }
 
-impl FIXField for QuoteCancelType {
+impl FIXValue for QuoteCancelType {
     fn from_bytes(bytes: &[u8]) -> Option<QuoteCancelType> {
         match bytes {
             b"1" => Some(QuoteCancelType::CancelForSymbol),
@@ -1976,7 +1976,7 @@ pub enum QuoteCondition {
     NonFirm = b'I' as isize,
 }
 
-impl FIXField for QuoteCondition {
+impl FIXValue for QuoteCondition {
     fn from_bytes(bytes: &[u8]) -> Option<QuoteCondition> {
         match bytes {
             b"A" => Some(QuoteCondition::Open),
@@ -2010,7 +2010,7 @@ pub enum QuoteEntryRejectReason {
     NotAuthorizedToQuoteSecurity = b'9' as isize,
 }
 
-impl FIXField for QuoteEntryRejectReason {
+impl FIXValue for QuoteEntryRejectReason {
     fn from_bytes(bytes: &[u8]) -> Option<QuoteEntryRejectReason> {
         match bytes {
             b"1" => Some(QuoteEntryRejectReason::UnknownSymbol),
@@ -2044,7 +2044,7 @@ pub enum QuoteRejectReason {
     NotAuthorizedToQuoteSecurity = b'9' as isize,
 }
 
-impl FIXField for QuoteRejectReason {
+impl FIXValue for QuoteRejectReason {
     fn from_bytes(bytes: &[u8]) -> Option<QuoteRejectReason> {
         match bytes {
             b"1" => Some(QuoteRejectReason::UnknownSymbol),
@@ -2071,7 +2071,7 @@ pub enum QuoteRequestType {
     Automatic = b'2' as isize,
 }
 
-impl FIXField for QuoteRequestType {
+impl FIXValue for QuoteRequestType {
     fn from_bytes(bytes: &[u8]) -> Option<QuoteRequestType> {
         match bytes {
             b"1" => Some(QuoteRequestType::Manual),
@@ -2092,7 +2092,7 @@ pub enum QuoteResponseLevel {
     AcknowledgeEachQuoteMessages = b'2' as isize,
 }
 
-impl FIXField for QuoteResponseLevel {
+impl FIXValue for QuoteResponseLevel {
     fn from_bytes(bytes: &[u8]) -> Option<QuoteResponseLevel> {
         match bytes {
             b"0" => Some(QuoteResponseLevel::NoAcknowledgement),
@@ -2113,7 +2113,7 @@ pub enum ReportToExch {
     Yes = b'Y' as isize,
 }
 
-impl FIXField for ReportToExch {
+impl FIXValue for ReportToExch {
     fn from_bytes(bytes: &[u8]) -> Option<ReportToExch> {
         match bytes {
             b"N" => Some(ReportToExch::No),
@@ -2133,7 +2133,7 @@ pub enum ResetSeqNumFlag {
     Yes = b'Y' as isize,
 }
 
-impl FIXField for ResetSeqNumFlag {
+impl FIXValue for ResetSeqNumFlag {
     fn from_bytes(bytes: &[u8]) -> Option<ResetSeqNumFlag> {
         match bytes {
             b"N" => Some(ResetSeqNumFlag::No),
@@ -2155,7 +2155,7 @@ pub enum RoutingType {
     BlockList = b'4' as isize,
 }
 
-impl FIXField for RoutingType {
+impl FIXValue for RoutingType {
     fn from_bytes(bytes: &[u8]) -> Option<RoutingType> {
         match bytes {
             b"1" => Some(RoutingType::TargetFirm),
@@ -2198,7 +2198,7 @@ pub enum Rule80A {
     ShortExemptTransactionForNonMemberCompetingMarketMaker = b'Z' as isize,
 }
 
-impl FIXField for Rule80A {
+impl FIXValue for Rule80A {
     fn from_bytes(bytes: &[u8]) -> Option<Rule80A> {
         match bytes {
             b"A" => Some(Rule80A::AgencySingleOrder),
@@ -2241,7 +2241,7 @@ pub enum SecurityRequestType {
     RequestListSecurities = b'3' as isize,
 }
 
-impl FIXField for SecurityRequestType {
+impl FIXValue for SecurityRequestType {
     fn from_bytes(bytes: &[u8]) -> Option<SecurityRequestType> {
         match bytes {
             b"0" => Some(SecurityRequestType::RequestSecurityIdentityAndSpecifications),
@@ -2267,7 +2267,7 @@ pub enum SecurityResponseType {
     CanNotMatchSelectionCriteria = b'6' as isize,
 }
 
-impl FIXField for SecurityResponseType {
+impl FIXValue for SecurityResponseType {
     fn from_bytes(bytes: &[u8]) -> Option<SecurityResponseType> {
         match bytes {
             b"1" => Some(SecurityResponseType::AcceptSecurityProposalAsIs),
@@ -2308,7 +2308,7 @@ pub enum SecurityTradingStatus {
     UnknownOrInvalid,
 }
 
-impl FIXField for SecurityTradingStatus {
+impl FIXValue for SecurityTradingStatus {
     fn from_bytes(bytes: &[u8]) -> Option<SecurityTradingStatus> {
         match bytes {
             b"1" => Some(SecurityTradingStatus::OpeningDelay),
@@ -2388,7 +2388,7 @@ pub enum SecurityType {
     CatsTigersLions,
 }
 
-impl FIXField for SecurityType {
+impl FIXValue for SecurityType {
     fn from_bytes(bytes: &[u8]) -> Option<SecurityType> {
         match bytes {
             b"?" => Some(SecurityType::WildcardEntry),
@@ -2483,7 +2483,7 @@ pub enum SessionRejectReason {
     InvalidMsgtype,
 }
 
-impl FIXField for SessionRejectReason {
+impl FIXValue for SessionRejectReason {
     fn from_bytes(bytes: &[u8]) -> Option<SessionRejectReason> {
         match bytes {
             b"0" => Some(SessionRejectReason::InvalidTagNumber),
@@ -2517,7 +2517,7 @@ pub enum SettlCurrFxRateCalc {
     Divide = b'D' as isize,
 }
 
-impl FIXField for SettlCurrFxRateCalc {
+impl FIXValue for SettlCurrFxRateCalc {
     fn from_bytes(bytes: &[u8]) -> Option<SettlCurrFxRateCalc> {
         match bytes {
             b"M" => Some(SettlCurrFxRateCalc::Multiply),
@@ -2539,7 +2539,7 @@ pub enum SettlInstMode {
     SpecificAllocationAccountStanding = b'3' as isize,
 }
 
-impl FIXField for SettlInstMode {
+impl FIXValue for SettlInstMode {
     fn from_bytes(bytes: &[u8]) -> Option<SettlInstMode> {
         match bytes {
             b"0" => Some(SettlInstMode::Default),
@@ -2561,7 +2561,7 @@ pub enum SettlInstSource {
     InstitutionsInstructions = b'2' as isize,
 }
 
-impl FIXField for SettlInstSource {
+impl FIXValue for SettlInstSource {
     fn from_bytes(bytes: &[u8]) -> Option<SettlInstSource> {
         match bytes {
             b"1" => Some(SettlInstSource::BrokersInstructions),
@@ -2582,7 +2582,7 @@ pub enum SettlInstTransType {
     Replace = b'R' as isize,
 }
 
-impl FIXField for SettlInstTransType {
+impl FIXValue for SettlInstTransType {
     fn from_bytes(bytes: &[u8]) -> Option<SettlInstTransType> {
         match bytes {
             b"C" => Some(SettlInstTransType::Cancel),
@@ -2608,7 +2608,7 @@ pub enum SettlLocation {
     ParticipantTrustCompany,
 }
 
-impl FIXField for SettlLocation {
+impl FIXValue for SettlLocation {
     fn from_bytes(bytes: &[u8]) -> Option<SettlLocation> {
         match bytes {
             b"CED" => Some(SettlLocation::Cedel),
@@ -2649,7 +2649,7 @@ pub enum SettlmntTyp {
     TPlus5 = b'9' as isize,
 }
 
-impl FIXField for SettlmntTyp {
+impl FIXValue for SettlmntTyp {
     fn from_bytes(bytes: &[u8]) -> Option<SettlmntTyp> {
         match bytes {
             b"0" => Some(SettlmntTyp::Regular),
@@ -2684,7 +2684,7 @@ pub enum Side {
     CrossShort = b'9' as isize,
 }
 
-impl FIXField for Side {
+impl FIXValue for Side {
     fn from_bytes(bytes: &[u8]) -> Option<Side> {
         match bytes {
             b"1" => Some(Side::Buy),
@@ -2711,7 +2711,7 @@ pub enum SolicitedFlag {
     Yes = b'Y' as isize,
 }
 
-impl FIXField for SolicitedFlag {
+impl FIXValue for SolicitedFlag {
     fn from_bytes(bytes: &[u8]) -> Option<SolicitedFlag> {
         match bytes {
             b"N" => Some(SolicitedFlag::No),
@@ -2733,7 +2733,7 @@ pub enum StandInstDbType {
     AGlobalCustodian = b'3' as isize,
 }
 
-impl FIXField for StandInstDbType {
+impl FIXValue for StandInstDbType {
     fn from_bytes(bytes: &[u8]) -> Option<StandInstDbType> {
         match bytes {
             b"0" => Some(StandInstDbType::Other),
@@ -2756,7 +2756,7 @@ pub enum SubscriptionRequestType {
     DisablePreviousSnapshotPlusUpdateRequest = b'2' as isize,
 }
 
-impl FIXField for SubscriptionRequestType {
+impl FIXValue for SubscriptionRequestType {
     fn from_bytes(bytes: &[u8]) -> Option<SubscriptionRequestType> {
         match bytes {
             b"0" => Some(SubscriptionRequestType::Snapshot),
@@ -2779,7 +2779,7 @@ pub enum TickDirection {
     ZeroMinusTick = b'3' as isize,
 }
 
-impl FIXField for TickDirection {
+impl FIXValue for TickDirection {
     fn from_bytes(bytes: &[u8]) -> Option<TickDirection> {
         match bytes {
             b"0" => Some(TickDirection::PlusTick),
@@ -2806,7 +2806,7 @@ pub enum TimeInForce {
     GoodTillDate = b'6' as isize,
 }
 
-impl FIXField for TimeInForce {
+impl FIXValue for TimeInForce {
     fn from_bytes(bytes: &[u8]) -> Option<TimeInForce> {
         match bytes {
             b"0" => Some(TimeInForce::Day),
@@ -2832,7 +2832,7 @@ pub enum TradSesMethod {
     TwoParty = b'3' as isize,
 }
 
-impl FIXField for TradSesMethod {
+impl FIXValue for TradSesMethod {
     fn from_bytes(bytes: &[u8]) -> Option<TradSesMethod> {
         match bytes {
             b"1" => Some(TradSesMethod::Electronic),
@@ -2854,7 +2854,7 @@ pub enum TradSesMode {
     Production = b'3' as isize,
 }
 
-impl FIXField for TradSesMode {
+impl FIXValue for TradSesMode {
     fn from_bytes(bytes: &[u8]) -> Option<TradSesMode> {
         match bytes {
             b"1" => Some(TradSesMode::Testing),
@@ -2878,7 +2878,7 @@ pub enum TradSesStatus {
     PreClose = b'5' as isize,
 }
 
-impl FIXField for TradSesStatus {
+impl FIXValue for TradSesStatus {
     fn from_bytes(bytes: &[u8]) -> Option<TradSesStatus> {
         match bytes {
             b"1" => Some(TradSesStatus::Halted),
@@ -2913,7 +2913,7 @@ pub enum TradeCondition {
     StoppedStock = b'N' as isize,
 }
 
-impl FIXField for TradeCondition {
+impl FIXValue for TradeCondition {
     fn from_bytes(bytes: &[u8]) -> Option<TradeCondition> {
         match bytes {
             b"A" => Some(TradeCondition::Cash),
@@ -2947,7 +2947,7 @@ pub enum TradeType {
     RiskTrade = b'R' as isize,
 }
 
-impl FIXField for TradeType {
+impl FIXValue for TradeType {
     fn from_bytes(bytes: &[u8]) -> Option<TradeType> {
         match bytes {
             b"A" => Some(TradeType::Agency),
@@ -2969,7 +2969,7 @@ pub enum UnsolicitedIndicator {
     Yes = b'Y' as isize,
 }
 
-impl FIXField for UnsolicitedIndicator {
+impl FIXValue for UnsolicitedIndicator {
     fn from_bytes(bytes: &[u8]) -> Option<UnsolicitedIndicator> {
         match bytes {
             b"N" => Some(UnsolicitedIndicator::No),
@@ -2990,7 +2990,7 @@ pub enum Urgency {
     Background = b'2' as isize,
 }
 
-impl FIXField for Urgency {
+impl FIXValue for Urgency {
     fn from_bytes(bytes: &[u8]) -> Option<Urgency> {
         match bytes {
             b"0" => Some(Urgency::Normal),
@@ -3004,3 +3004,4 @@ impl FIXField for Urgency {
         v.push(*self as u8);
     }
 }
+

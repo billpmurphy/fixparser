@@ -11,3 +11,7 @@
 /target/
 Cargo.lock
 doc/
+
+# Python compiled files/env
+codegen/*.pyc
+codegen/env/

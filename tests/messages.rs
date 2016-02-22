@@ -31,5 +31,5 @@ b"8=FIX.4.1\x019=104\x0135=F\x0134=6\x0149=BANZAI\x0152=20121105-23:25:16\x0156=
 // Sample FIX 4.1 messages, Invalid
 // Source: http://fixparser.targetcompid.com/
 
-pub const IFIX42_INVALIDTYPE: &'static[u8] =
-b"8=FIX.4.1\x019=82\x0135=3\x0134=8\x0149=EXEC\x0152=20121105-23:25:16\x0156=BANZAI\x0145=6\x0158=Unsupported message type\x0110=000\x01";
+//pub const IFIX42_INVALIDTYPE: &'static[u8] =
+//b"8=FIX.4.1\x019=82\x0135=3\x0134=8\x0149=EXEC\x0152=20121105-23:25:16\x0156=BANZAI\x0145=6\x0158=Unsupported message type\x0110=000\x01";

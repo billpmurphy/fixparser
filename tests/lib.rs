@@ -2,7 +2,7 @@ extern crate rustfix;
 mod messages;
 
 use rustfix::*;
-use rustfix::FIXVersion::*;
+//use rustfix::FIXVersion::*;
 use messages::*;
 
 

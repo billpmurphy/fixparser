@@ -2,3 +2,6 @@
 name = "rustfix"
 version = "0.1.0"
 authors = ["Bill Murphy <billpmurphy92@gmail.com>"]
+
+[dependencies]
+chrono = "0.2"

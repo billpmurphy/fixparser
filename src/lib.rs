@@ -1,13 +1,14 @@
+extern crate chrono;
+
 mod unparse;
 mod protocol;
 mod types;
-mod encoder;
-mod decoder;
 mod preprocess;
 
-mod fix40;
-mod fix41;
-mod fix42;
+pub mod fix40;
+pub mod fix41;
+pub mod fix42;
+pub mod fix43;
 
 pub use protocol::{FIXVersion, MsgBody};
 

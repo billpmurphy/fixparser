@@ -1,9 +1,10 @@
 /// Preprocess a raw FIX message.
-use decoder::decode_u32;
 use protocol::{FIXVersion, MsgBody, MsgLen, Checksum, compute_checksum};
+
 
 /// The minimum possible length of a FIX message.
 const MIN_MESSAGE_LEN: usize = 22;
+
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum PreprocessError {
@@ -108,7 +109,11 @@ pub fn preprocess(msg: &[u8]) -> Result<MsgBody, PreprocessError> {
         Err(PreprocessError::BadChecksum)
     }
     else {
-        Ok(MsgBody { version: version, body: &msg[body_start_index..tag_10_start_index] })
+        Ok(MsgBody {
+            version: version,
+            body: &msg[body_start_index..tag_10_start_index],
+            checksum: declared_checksum,
+        })
     }
 }
 
@@ -130,7 +135,9 @@ mod tests {
         assert!(parse_tag_8(b"").is_err());
         assert!(parse_tag_8(b"8=").is_err());
         assert!(parse_tag_8(b"8=FIY.4.1\x019=00").is_err());
+        assert!(parse_tag_8(b"8=FIX4.1\x019=00").is_err());
         assert!(parse_tag_8(b"8=FIXT.4.1\x019=00").is_err());
+        assert!(parse_tag_8(b"8=FIXT.1.4\x019=00").is_err());
         assert!(parse_tag_8(b"8=FIX4.1\x019=00").is_err());
         assert!(parse_tag_8(b"8=FIX.4.19=00").is_err());
         assert!(parse_tag_8(b"8=FIX.4.5\x019=00").is_err());
@@ -160,6 +167,7 @@ mod tests {
         assert_eq!(parse_tag_10(b"10=000\x01").unwrap(), 0);
         assert_eq!(parse_tag_10(b"10=002\x01").unwrap(), 2);
         assert_eq!(parse_tag_10(b"10=020\x01").unwrap(), 20);
+        assert_eq!(parse_tag_10(b"10=200\x01").unwrap(), 200);
         assert_eq!(parse_tag_10(b"10=123\x01").unwrap(), 123);
         assert_eq!(parse_tag_10(b"10=255\x01").unwrap(), 255);
 
@@ -168,11 +176,16 @@ mod tests {
         assert!(parse_tag_10(b"10=006").is_err());
         assert!(parse_tag_10(b"10=006|").is_err());
         assert!(parse_tag_10(b"10=6\x01").is_err());
+        assert!(parse_tag_10(b"10=06\x01").is_err());
         assert!(parse_tag_10(b"10=56\x01").is_err());
         assert!(parse_tag_10(b"10=256\x01").is_err());
         assert!(parse_tag_10(b"10=600\x01").is_err());
         assert!(parse_tag_10(b"10=0011\x01").is_err());
         assert!(parse_tag_10(b"10=aa0\x01").is_err());
         assert!(parse_tag_10(b"11=010\x01").is_err());
+    }
+
+    #[test]
+    fn test_preprocess() {
     }
 }

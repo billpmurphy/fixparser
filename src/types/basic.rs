@@ -1,32 +1,64 @@
+use std::str;
+use chrono::{Date, DateTime, NaiveTime, UTC, Local};
+use protocol::FIXValue;
+
+
 /// Raw byte array datatype.
 ///
 /// Used in FIX Protocol Versions 4.0, 4.1, 4.2, 4.3, 4.4, 5.0, 5.0 SP1, and 5.0 SP2
 pub type Data = Vec<u8>;
+
+impl FIXValue for Data {
+    #[inline]
+    fn from_bytes(bytes: &[u8]) -> Option<Vec<u8>> {
+        Some(bytes.to_vec())
+    }
+
+    #[inline]
+    fn to_bytes(&self, v: &mut Vec<u8>) {
+        v.extend(self);
+    }
+}
 
 /// Floating point datatype.
 ///
 /// Used in FIX Protocol Versions 4.0, 4.1, 4.2, 4.3, 4.4, 5.0, 5.0 SP1, and 5.0 SP2
 pub type FIXFloat = f64;
 
+impl FIXValue for FIXFloat {
+    #[inline]
+    fn from_bytes(bytes: &[u8]) -> Option<FIXFloat> {
+        match str::from_utf8(bytes) {
+            Ok(s) => s.parse().ok(),
+            _ => None
+        }
+    }
+
+    #[inline]
+    fn to_bytes(&self, v: &mut Vec<u8>) {
+        v.extend(self.to_string().as_bytes());
+    }
+}
+
 /// Float field representing a Price times a Qty.
 ///
 /// Used in FIX Protocol Versions 4.2, 4.3, 4.4, 5.0, 5.0 SP1, and 5.0 SP2
-pub type Amt = f64;
+pub type Amt = FIXFloat;
 
 /// Represents a percentage value as a decimal.
 ///
 /// Used in FIX Protocol Versions 4.3, 4.4, 5.0, 5.0 SP1, and 5.0 SP2
-pub type Percentage = f64;
+pub type Percentage = FIXFloat;
 
 /// Represents a price as a floating-point value.
 ///
 /// Used in FIX Protocol Versions 4.2, 4.3, 4.4, 5.0, 5.0 SP1, and 5.0 SP2
-pub type Price = f64;
+pub type Price = FIXFloat;
 
 /// Representing a price offset, which can be mathematically added to a Price.
 ///
 /// Used in FIX Protocol Versions 4.2, 4.3, 4.4, 5.0, 5.0 SP1, and 5.0 SP2
-pub type PriceOffset = f64;
+pub type PriceOffset = FIXFloat;
 
 /// Represents a whole number of securities or fractional quantity of securities.
 ///
@@ -41,11 +73,39 @@ pub enum Qty {
 
 impl Qty {
     /// Return a Qty as a float value, even if the Qty is whole.
-    fn as_float(f: Qty) -> f64 {
+    pub fn as_float(f: Qty) -> f64 {
         match f {
             Qty::Whole(w) => w as f64,
             Qty::Fraction(f) => f
         }
+    }
+
+    /// Return true if the Qty is a whole number, and false otherwise.
+    pub fn is_whole(f: Qty) -> bool {
+        match f {
+            Qty::Whole(_) => true,
+            Qty::Fraction(_) => false
+        }
+    }
+}
+
+impl FIXValue for Qty {
+    #[inline]
+    fn from_bytes(bytes: &[u8]) -> Option<Qty> {
+        if bytes.contains(&b'.') {
+            f64::from_bytes(bytes).map(Qty::Fraction)
+        }
+        else {
+            u32::from_bytes(bytes).map(Qty::Whole)
+        }
+    }
+
+    #[inline]
+    fn to_bytes(&self, v: &mut Vec<u8>) {
+        match *self {
+            Qty::Whole(w) => u32::to_bytes(&w, v),
+            Qty::Fraction(f) => f64::to_bytes(&f, v),
+        };
     }
 }
 
@@ -53,6 +113,51 @@ impl Qty {
 ///
 /// Used in FIX Protocol Versions 4.0, 4.1, 4.2, 4.3, 4.4, 5.0, 5.0 SP1, and 5.0 SP2
 pub type FIXInt = i32;
+
+impl FIXValue for FIXInt {
+    #[inline]
+    fn from_bytes(bytes: &[u8]) -> Option<FIXInt> {
+        match str::from_utf8(bytes) {
+            Ok(s) => s.parse().ok(),
+            _ => None
+        }
+    }
+
+    #[inline]
+    fn to_bytes(&self, v: &mut Vec<u8>) {
+        v.extend(self.to_string().as_bytes());
+    }
+}
+
+impl FIXValue for u32 {
+    #[inline]
+    fn from_bytes(bytes: &[u8]) -> Option<u32> {
+        match str::from_utf8(bytes) {
+            Ok(s) => s.parse().ok(),
+            _ => None
+        }
+    }
+
+    #[inline]
+    fn to_bytes(&self, v: &mut Vec<u8>) {
+        v.extend(self.to_string().as_bytes());
+    }
+}
+
+impl FIXValue for u8 {
+    #[inline]
+    fn from_bytes(bytes: &[u8]) -> Option<u8> {
+        match str::from_utf8(bytes) {
+            Ok(s) => s.parse().ok(),
+            _ => None
+        }
+    }
+
+    #[inline]
+    fn to_bytes(&self, v: &mut Vec<u8>) {
+        v.extend(self.to_string().as_bytes());
+    }
+}
 
 /// Represents a FIX message sequence number.
 ///
@@ -79,15 +184,99 @@ pub type Length = u32;
 /// Used in FIX Protocol Versions 4.2, 4.3, 4.4, 5.0 SP1, and 5.0 SP2
 pub type FIXBoolean = bool;
 
+impl FIXValue for FIXBoolean {
+    #[inline]
+    fn from_bytes(bytes: &[u8]) -> Option<FIXBoolean> {
+        match bytes {
+            b"Y" => Some(true),
+            b"N" => Some(false),
+            _ => None
+        }
+    }
+
+    #[inline]
+    fn to_bytes(&self, v: &mut Vec<u8>) {
+        match *self {
+            true => v.push(b'Y'),
+            false => v.push(b'N'),
+        };
+    }
+}
+
 /// One-byte character datatype. Cannot contain the separator character (SOH).
 ///
 /// Used in FIX Protocol Versions 4.0, 4.1, 4.2, 4.3, 4.4, 5.0, 5.0 SP1, and 5.0 SP2
-pub type FIXChar = u8;
+pub struct FIXChar {
+    chr: u8
+}
+
+impl FIXChar {
+    /// Returns a new FIXChar unless the provided character is the SOH (\x01) separator character.
+    #[inline]
+    pub fn new(chr: u8) -> Option<FIXChar> {
+        match chr {
+            b'\x01' => None,
+            _ => Some(FIXChar { chr : chr })
+        }
+    }
+
+    /// Getter method for FIXChar.
+    #[inline]
+    pub fn char(&self) -> u8 {
+        self.chr
+    }
+}
+
+impl FIXValue for FIXChar {
+    #[inline]
+    fn from_bytes(bytes: &[u8]) -> Option<FIXChar> {
+        match bytes.len() {
+            1 => None,
+            _ => FIXChar::new(bytes[0])
+        }
+    }
+
+    #[inline]
+    fn to_bytes(&self, v: &mut Vec<u8>) {
+        v.push(self.char())
+    }
+}
 
 /// Multi-byte string. Cannot contain the separator character (SOH).
 ///
 /// Used in FIX Protocol Versions 4.2, 4.3, 4.4, 5.0 SP1, and 5.0 SP2
-pub type FIXString = String;
+pub struct FIXString {
+    string: String
+}
+
+impl FIXString {
+    /// Returns a new FIXString unless the SOH (\x01) separator character is in the string.
+    #[inline]
+    pub fn new(s: String) -> Option<FIXString> {
+        match s.find('\x01') {
+            Some(_) => Some(FIXString { string: s }),
+            _ => None
+        }
+    }
+
+    /// Getter method for FIXString.
+    #[inline]
+    pub fn string(&self) -> &str {
+        &self.string
+    }
+}
+
+impl FIXValue for FIXString {
+    #[inline]
+    fn from_bytes(bytes: &[u8]) -> Option<FIXString> {
+        None
+    }
+
+    #[inline]
+    fn to_bytes(&self, v: &mut Vec<u8>) {
+        v.extend(self.string().as_bytes())
+    }
+}
 
 /// Represents one of the days of a month, i.e. numbers 1-31.
 ///
@@ -113,6 +302,18 @@ impl DayOfMonth {
     }
 }
 
+impl FIXValue for DayOfMonth {
+    #[inline]
+    fn from_bytes(bytes: &[u8]) -> Option<DayOfMonth> {
+        u8::from_bytes(bytes).and_then(DayOfMonth::new)
+    }
+
+    #[inline]
+    fn to_bytes(&self, v: &mut Vec<u8>) {
+        u8::to_bytes(&self.day(), v);
+    }
+}
+
 /// Represents a month and a year, e.g. "March 2015."
 ///
 /// Used in FIX Protocol Versions 4.1, 4.2, 4.3, 4.4, 5.0, 5.0 SP1, and 5.0 SP2
@@ -129,7 +330,7 @@ impl MonthYear {
         let month = monthyear % 100;
         let year = monthyear / 100;
 
-        if month < 13 && month > 0 && year >= 0 && year <= 9999 {
+        if month < 13 && month > 0 && year <= 9999 {
             Some(MonthYear { monthyear: monthyear })
         }
         else {
@@ -153,35 +354,47 @@ impl MonthYear {
     }
 }
 
+impl FIXValue for MonthYear {
+    #[inline]
+    fn from_bytes(bytes: &[u8]) -> Option<MonthYear> {
+        u32::from_bytes(bytes).and_then(MonthYear::new)
+    }
+
+    #[inline]
+    fn to_bytes(&self, v: &mut Vec<u8>) {
+        u32::to_bytes(&self.monthyear(), v);
+    }
+}
+
 /// Date of Local Market (vs. UTC).
 ///
 /// Used in FIX Protocol Versions 4.2, 4.3, 4.4, 5.0, 5.0 SP1, and 5.0 SP2
-pub type LocalMktDate = String;
+pub type LocalMktDate = Date<Local>;
 
 /// UTC date.
 ///
 /// Used in FIX Protocol Versions 4.0, 4.1, 4.2, 4.3, 4.4, 5.0, 5.0 SP1, and 5.0 SP2
-pub type UTCDateOnly = String;
+pub type UTCDateOnly = Date<UTC>;
 
 /// UTC time.
 ///
 /// Used in FIX Protocol Versions 4.0, 4.1, 4.2, 4.3, 4.4, 5.0, 5.0 SP1, and 5.0 SP2
-pub type UTCTimeOnly = String;
+pub type UTCTimeOnly = NaiveTime;
 
 /// UTC date and time.
 ///
 /// Used in FIX Protocol Versions 4.2, 4.3, 4.4, 5.0 SP1, and 5.0 SP2
-pub type UTCTimestamp = String;
+pub type UTCTimestamp = DateTime<UTC>;
 
 /// ISO 8601 local time zone time.
 ///
 /// Used in FIX Protocol Versions 5.0, 5.0 SP1, and 5.0 SP2
-pub type TZTimeOnly = String;
+pub type TZTimeOnly = NaiveTime;
 
 /// Local time zone date and time.
 ///
 /// Used in FIX Protocol Versions 5.0, 5.0 SP1, and 5.0 SP2
-pub type TZTimestamp = String;
+pub type TZTimestamp = DateTime<Local>;
 
 /// String datatype consisting of one or more space-separated Strings.
 ///
@@ -196,7 +409,7 @@ pub type MultipleValueChar = String;
 /// Represents an XML document that can be sent through FIX.
 ///
 /// Used in FIX Protocol Versions 5.0 SP1, and 5.0 SP2
-pub type XMLData = String;
+pub type XMLData = Data;
 
 /// Datatype representing positive integer values above 1000.
 ///
@@ -226,4 +439,71 @@ pub enum Tenor {
     Month(u32),
     /// Year tenor.
     Year(u32),
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use protocol::FIXValue;
+
+    #[test]
+    fn test_data() {
+        // encode
+        let v1: Vec<u8> = vec![b'0', b'1', b'p', b'2'];
+        let d: Data = Data::from_bytes(&v1).unwrap();
+
+        // decode
+        let mut v2: Vec<u8> = Vec::new();
+        d.to_bytes(&mut v2);
+        assert_eq!(v1, v2);
+    }
+
+    #[test]
+    fn test_bool() {
+        // decode
+        assert_eq!(true, FIXBoolean::from_bytes(b"Y").unwrap());
+        assert_eq!(false, FIXBoolean::from_bytes(b"N").unwrap());
+        assert!(FIXBoolean::from_bytes(b"YY").is_none());
+        assert!(FIXBoolean::from_bytes(b"NN").is_none());
+        assert!(FIXBoolean::from_bytes(&Vec::new()).is_none());
+        assert!(FIXBoolean::from_bytes(b"y").is_none());
+        assert!(FIXBoolean::from_bytes(b"n").is_none());
+        assert!(FIXBoolean::from_bytes(b"T").is_none());
+        assert!(FIXBoolean::from_bytes(b"F").is_none());
+        assert!(FIXBoolean::from_bytes(b"t").is_none());
+        assert!(FIXBoolean::from_bytes(b"f").is_none());
+
+        // encode
+        let mut v: Vec<u8> = vec![b'a', b'b', b'='];
+        FIXBoolean::to_bytes(&true, &mut v);
+        FIXBoolean::to_bytes(&false, &mut v);
+        assert_eq!(&v, b"ab=YN");
+    }
+
+    #[test]
+    fn test_float() {
+        // decode
+        assert_eq!(0.0, FIXFloat::from_bytes(b"0").unwrap());
+        assert_eq!(0.0, FIXFloat::from_bytes(b"0.0").unwrap());
+        assert_eq!(0.0, FIXFloat::from_bytes(b"-0.0").unwrap());
+        assert_eq!(0.0, FIXFloat::from_bytes(b"0000.0000").unwrap());
+
+        // encode
+        let mut v: Vec<u8> = vec![b'a', b'b', b'='];
+        FIXFloat::to_bytes(&1.234, &mut v);
+        assert_eq!(&v, b"ab=1.234");
+    }
+
+/*    #[test]
+    fn test_int() {
+    }
+
+    #[test]
+    fn test_u8() {
+    }
+
+    #[test]
+    fn test_u32() {
+    }*/
 }

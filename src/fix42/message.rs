@@ -2,9 +2,6 @@ use types::*;
 use fix42::fields::*;
 
 pub struct Header {
-    pub begin_string: FIXString,
-    pub body_length: FIXInt,
-    pub msg_type: MsgType,
     pub sender_comp_id: FIXString,
     pub target_comp_id: FIXString,
     pub on_behalf_of_comp_id: Option<FIXString>,
@@ -22,7 +19,6 @@ pub struct Header {
     pub deliver_to_location_id: Option<FIXString>,
     pub poss_dup_flag: Option<PossDupFlag>,
     pub poss_resend: Option<PossResend>,
-    pub sending_time: UTCTimestamp,
     pub orig_sending_time: Option<UTCTimestamp>,
     pub xml_data: Option<Data>,
     pub message_encoding: Option<MessageEncoding>,

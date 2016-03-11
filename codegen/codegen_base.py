@@ -9,25 +9,35 @@ VERSIONS = ['FIX40',
             'FIX41',
             'FIX42',
             'FIX43',
-            'FIX44',
-            'FIX50',
-            'FIX50SP1',
-            'FIX50SP2',
-            'FIXT11']
+            'FIX44',]
+            #'FIX50',
+            #'FIX50SP1',
+            #'FIX50SP2']
 
 DATA_LEN_FIELDS = set([
     'EncodedAllocTextLen',
     'EncodedIssuerLen',
     'EncodedHeadlineLen',
+    'EncodedLegIssuerLen',
+    'EncodedLegSecurityDescLen',
     'EncodedListExecInstLen',
     'EncodedSecurityDescLen',
     'EncodedTextLen',
     'EncodedUnderlyingIssuerLen',
     'EncodedUnderlyingSecurityDescLen',
     'RawDataLen',
+    'RawDataLenth',
+    'SecureDataLen'
     'SignatureLen',
     'XmlDataLen'])
 
+HEADER_FIELDS = set([
+    'BeginString',
+    'BodyLength',
+    'MsgType',
+    'SendingTime'])
+
+OMIT_FIELDS = DATA_LEN_FIELDS.union(HEADER_FIELDS)
 
 FIX_TYPES = {'AMT': 'Amt',
             'BOOLEAN': 'FIXBoolean',
@@ -40,9 +50,12 @@ FIX_TYPES = {'AMT': 'Amt',
             'EXCHANGE': None,
             'FLOAT': 'FIXFloat',
             'INT': 'FIXInt',
+            'LANGUAGE': 'Language',
             'LENGTH': 'Length',
             'LOCALMKTDATE': 'LocalMktDate',
             'MONTHYEAR': 'MonthYear',
+            'MULTIPLECHARVALUE': 'MultipleValueChar',
+            'MULTIPLESTRINGVALUE': 'MultipleValueString',
             'MULTIPLEVALUESTRING': 'MultipleValueString',
             'NUMINGROUP': 'NumInGroup',
             'PERCENTAGE': 'Percentage',
@@ -52,7 +65,9 @@ FIX_TYPES = {'AMT': 'Amt',
             'SEQNUM': 'SeqNum',
             'STRING': 'FIXString',
             'TENOR': 'Tenor',
-            'TIME': 'UTCTimeOnly',
+            'TIME': 'UTCTimestamp',
+            'TZTIMEONLY': 'TZTimeOnly',
+            'TZTIMESTAMP': 'TZTimestamp',
             'UTCDATEONLY': 'UTCDateOnly',
             'UTCTIMEONLY': 'UTCTimeOnly',
             'UTCTIMESTAMP': 'UTCTimestamp',
@@ -98,12 +113,12 @@ def format_reserved_name(name):
     return name
 
 
-def tab(text, n):
+def tab(text, n=1):
     """
-    Indent some generated code by `n` 4-space indents.
+    Indent generated code by `n` 4-space indents.
     """
     lines = text.split('\n')
-    lines = ['    ' + line for line in lines]
+    lines = [('    ' * n) + line for line in lines]
     return '\n'.join(lines)
 
 
@@ -115,11 +130,12 @@ def get_version_name(spec):
     """
     FIX XML spec -> str version name of spec
     """
+    versiontype = spec.get('type')
     maj_version = spec.get('major')
     min_version = spec.get('minor')
     servicepack = spec.get('servicepack')
 
-    version_str = 'FIX' + maj_version + min_version
+    version_str = versiontype + maj_version + min_version
     if servicepack != '0':
         version_str += 'SP' + servicepack
 
@@ -134,8 +150,7 @@ def get_fields(message):
     fields = []
     for field in message.getchildren():
         if field.tag in ('field', 'component'):
-            # Raw data length fields
-            if field.tag == 'field' and field.get('name') in DATA_LEN_FIELDS:
+            if field.tag == 'field' and field.get('name') in OMIT_FIELDS:
                 continue
 
             # Regular fields

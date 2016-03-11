@@ -3,7 +3,7 @@
 import errno
 import os
 import re
-from collections import namedtuple
+from collections import namedtuple, Counter
 import xml.etree.ElementTree as ET
 
 from codegen_base import *
@@ -41,8 +41,11 @@ def format_struct_field_name(name):
     return format_reserved_name(s2)
 
 
-class Enum(namedtuple("Enum", ["name", "code"])):
-
+class EnumMember(namedtuple("EnumMember", ["name", "code"])):
+    """
+    Represents one member of a Rust enum type (i.e. one value of a FIX enum
+    field).
+    """
     def __str__(self):
         if len(self.code) == 1:
             return "    {n} = b'{c}' as isize,".format(n=self.name, c=self.code)
@@ -51,10 +54,10 @@ class Enum(namedtuple("Enum", ["name", "code"])):
 
     def match_arm(self, typename):
         """
-        Part of the match statement that converts from bytes to this enum
+        Line in the match statement that converts from bytes to this enum
         value.
         """
-        matchstr = '            b"{c}" => Some({a}::{n}),'
+        matchstr = tab('b"{c}" => Some({a}::{n}),', 3)
         return matchstr.format(c=self.code, a=typename, n=self.name)
 
 
@@ -71,7 +74,7 @@ class Field(object):
         if len(children) == 0:
             self.base_type = fix_types(field.get("type"), version)
         else:
-            self.enums = [Enum(format_type_name(c.get('description')),
+            self.enums = [EnumMember(format_type_name(c.get('description')),
                                c.get('enum'))
                           for c in children]
             self.multi_byte_code = any( len(e.code) > 1 for e in self.enums )
@@ -82,6 +85,14 @@ class Field(object):
 
         self.derive = "#[derive(Debug, Clone, Copy, PartialEq, Eq)]"
         return
+
+    def __eq__(self, other):
+        sort_enums = lambda e: sorted([] if e is None else e)
+
+        return self.name == other.name and\
+                self.raw_name == other.raw_name and\
+                sort_enums(self.enums) == sort_enums(other.enums) and\
+                self.base_type == other.base_type
 
     def __str__(self):
         if self.enums is not None:
@@ -124,14 +135,6 @@ class Field(object):
 
 
 class OptionalField(namedtuple("OptionalField", ["field", "is_option"])):
-    special_fields = ["CheckSum"]
-
-    def handle_special_field(self, typename):
-        """Individual special fields whose type needs to be modified"""
-        if self.field.name == "CheckSum":
-            fieldname = format_struct_field_name(self.field.name)
-            typename = "u8"
-        return self.to_str(fieldname, typename)
 
     def to_str(self, fieldname, typename):
         if self.is_option:
@@ -144,12 +147,8 @@ class OptionalField(namedtuple("OptionalField", ["field", "is_option"])):
             typename = self.field.base_type
         else:
             typename = self.field.name
-
-        if self.field.name in OptionalField.special_fields:
-            return self.handle_special_field(typename)
-        else:
-            fieldname = format_struct_field_name(self.field.name)
-            return self.to_str(fieldname, typename)
+        fieldname = format_struct_field_name(self.field.name)
+        return self.to_str(fieldname, typename)
 
 
 class Component(object):
@@ -164,34 +163,43 @@ class Component(object):
             field = tagdict[f.get('name')]
             optional = f.get('required') == 'N'
             self.fields.append(OptionalField(field, optional))
-
-        tagdict.update({ name: self })
         return
+
+    def __eq__(self, other):
+        return self.name == other.name and self.fields == other.fields
 
     def __str__(self):
         field_str = ",\n".join( "    pub " + str(f) for f in self.fields )
         return "pub struct {a} {{\n{b}\n}}\n".format(a=self.name, b=field_str)
 
 
+def make_comps(comps, tags):
+    new_components = []
+    while True:
+        if len(comps) == 0:
+            return new_components
+
+        for i, comp in enumerate(comps):
+            if all( (f.get('name') in tags) for f in get_fields(comp) ):
+                new_component = Component(comp, tags)
+                new_components.append(new_component)
+                tags[comp.get('name')] = new_component
+                break
+        comps.pop(i)
+    raise ValueError("Recursive component dependency")
+
+
 class Message(namedtuple("Message", ["name", "code", "fields"])):
 
-    def handle_special_field_groups(self):
-        for field in self.fields:
-            pass
-
     def __str__(self):
-        doc = "    /// {a} message. Message code: {c}\n"
+        doc = tab("/// {a} message. Message code: {c}")
         doc = doc.format(a=self.name, c=self.code)
 
         if len(self.fields) == 0:
             return "{d}    {a}".format(d=doc, a=self.name)
         else:
-            # there are some special fields (raw data, signature) tha need to
-            # be modified before we convert each field to string
-            self.handle_special_field_groups()
-
             fields = ",\n".join( " " * 8 + str(f) for f in self.fields )
-            struct_str = "{d}    {a} {{\n{b}\n    }}"
+            struct_str = "{d}\n    {a} {{\n{b}\n    }}"
             return struct_str.format(d=doc, a=self.name, b=fields)
 
 
@@ -199,7 +207,6 @@ class MessageBody(object):
 
     def __init__(self, messages, tagdict):
         self.messages = []
-        self.field_contents = []
         for msg in messages.getchildren():
             fields = []
             for f in get_fields(msg):
@@ -215,10 +222,10 @@ class MessageBody(object):
     def __str__(self):
         messages=",\n\n".join( str(m) for m in self.messages )
         body = ['pub struct Message {',
-            tab('/// Standard message header.', 1),
-            tab('pub header: Header,', 1),
-            tab('/// Message body', 1),
-            tab('pub body: MessageBody,', 1),
+            tab('/// Standard message header.'),
+            tab('pub header: Header,'),
+            tab('/// Message body'),
+            tab('pub body: MessageBody,'),
             '}\n',
             'pub enum MessageBody {{\n{0}\n}}'.format(messages),]
         return "\n".join(body)
@@ -226,16 +233,20 @@ class MessageBody(object):
 
 def set_up_directory(src_path):
     """
-    Set up the directory (e.g. 'src/fix41') for the generated code and create
-    the mod.rs file.
+    Set up directory (e.g. 'src/fix41') for generated code.
     """
     try:
         os.mkdir(src_path);
     except OSError as exception:
         if exception.errno != errno.EEXIST:
             raise
+    return
 
-    # make mod.rs
+
+def make_mod_rs(src_path):
+    """
+    Make the mod.rs file for a source diectory.
+    """
     with open("{0}/mod.rs".format(src_path), "wb") as f:
         f.write("mod fields;\n")
         f.write("mod message;\n\n")
@@ -244,13 +255,33 @@ def set_up_directory(src_path):
     return
 
 
-def make_fields_rs(src_path, fields, components):
-    fields = sorted( str(f) for f in fields if str(f) != "" )
-    components = sorted( str(c) for c in components )
+def make_fields_rs(src_path, fields, components, common_set=None):
+    common_types = []
+    unique_fields = []
+    unique_components = []
+
+    if common_set is not None:
+        for f in fields:
+            (common_types if f.name in common_set else unique_fields).append(f)
+
+        for c in components:
+            (common_types if f.name in common_set else unique_components).append(c)
+    else:
+        unique_fields = fields
+        unique_components = components
+
+    common_str = "pub use common::{0} as {0};"
+    common = sorted(common_str.format(c.name) for c in common_types)
+
+    fields = sorted( str(f) for f in unique_fields if str(f) != "" )
+    components = sorted( str(c) for c in unique_components )
+
     with open("{0}/fields.rs".format(src_path), "wb") as f:
-        if len(components) > 0:
+        if len(unique_components) > 0:
             f.write("use types::*;\n")
-        f.write("use protocol::FIXValue;\n\n")
+        f.write("use protocol::FIXValue;\n")
+        f.write("\n".join(common))
+        f.write("\n\n\n");
         f.write("\n".join(fields))
         f.write("\n")
         f.write("\n".join(components))
@@ -266,31 +297,113 @@ def make_message_rs(src_path, version, head, messages):
     return
 
 
-def codegen(verison, spec_dir, src_dir):
-    spec_path = "{d}/{v}.xml".format(d=spec_dir, v=version)
-    src_path = "{d}/{v}".format(d=src_dir, v=version.lower())
+class CommonCodegen(object):
+    """
+    Object representing a collection of Fields and Components that are present
+    in all FIX protocol versions.
+    """
+    def __init__(self, codegens, src_path):
+        self.src_path = src_path
 
-    spec = ET.parse(spec_path).getroot()
-    assert get_version_name(spec) == version
+        noncommon = set()  # names of non-universal items
+        common = {}        # name -> value map of universal items
+        counts = Counter() # counts of universal items
 
-    header, msgs, _, components, fields = spec.getchildren()
+        for codegen in codegens:
+            for name, item in codegen.tags.iteritems():
+                if name not in noncommon:
+                    if name not in common:
+                        counts[name] += 1
+                        common[name] = item
+                    elif common[name] == item:
+                        counts[name] += 1
+                    else:
+                        del counts[name]
+                        del common[name]
+                        noncommon.add(name)
 
-    tagfields = [Field(f, version) for f in fields.getchildren()]
-    tagdict = { f.raw_name : f for f in tagfields }
+        self.fields = []
+        self.components = []
+        self.name_set = set()
+        for name, item in common.iteritems():
+            if counts[name] > 1:
+                if isinstance(item, Field):
+                    if str(item) == "":
+                        continue
+                    self.fields.append(item)
+                elif isinstance(item, Component):
+                    self.components.append(item)
+                else:
+                    raise ValueError
+                self.name_set.add(name)
+        return
 
-    comps = [Component(c, tagdict) for c in components.getchildren()]
-    #tagdict.update({ c.name : c for c in comps })
+    def write(self):
+        set_up_directory(self.src_path)
 
-    head = Component(header, tagdict, "Header")
-    messages = MessageBody(msgs, tagdict)
+        # Minimal mod.rs
+        with open("{0}/mod.rs".format(self.src_path), "wb") as f:
+            f.write("mod fields;\n")
+            f.write("pub use self::fields::*;\n")
 
-    set_up_directory(src_path)
-    make_fields_rs(src_path, tagfields, comps)
-    make_message_rs(src_path, version, head, messages)
+        make_fields_rs(self.src_path, self.fields, self.components)
+        return
+
+
+class Codegen(object):
+    """
+    Object that reads the spec for a FIX protocol version and generates Rust
+    code.
+
+    Attributes:
+        version - protocol version name
+        spec_path - path to the spec file
+        src_path - path to the source directory to be generated
+        fields - list of Fields
+        comps - list of Components
+        tags - dictionary mapping names (tags) to Fields/Components
+        header - Component representing the std. message header
+        messages - MessageBody representing the enum of possible messages
+    """
+    def __init__(self, version, spec_dir, src_dir):
+        self.version = version
+        self.spec_path = "{d}/{v}.xml".format(d=spec_dir, v=version)
+        self.src_path = "{d}/{v}".format(d=src_dir, v=version.lower())
+
+        spec = ET.parse(self.spec_path).getroot()
+        assert get_version_name(spec) == version, "Name mismatch " + version
+
+        header, msgs, _, components, fields = spec.getchildren()
+
+        self.fields = [Field(f, version) for f in fields.getchildren()]
+        self.tags = { f.raw_name : f for f in self.fields }
+        self.comps = make_comps(components.getchildren(), self.tags)
+
+        self.header = Component(header, self.tags, "Header")
+        self.messages = MessageBody(msgs, self.tags)
+        return
+
+    def write(self, common):
+        """
+        Generate the Rust source and write it to file.
+        """
+        set_up_directory(self.src_path)
+        make_mod_rs(self.src_path)
+        make_fields_rs(self.src_path, self.fields, self.comps, common.name_set)
+        make_message_rs(self.src_path, self.version, self.header, self.messages)
+        return
+
+
+def main():
+    sources = [Codegen(version, "spec", "src") for version in VERSIONS]
+
+    common = CommonCodegen(sources, "src/common")
+    common.write()
+
+    for source in sources:
+        source.write(common)
     return
 
 
 if __name__ == '__main__':
-    for version in VERSIONS:
-        print "Generating Rust code for {0}".format(version)
-        codegen(version, "spec", "src")
+    main()

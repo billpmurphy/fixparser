@@ -2,9 +2,6 @@ use types::*;
 use fix41::fields::*;
 
 pub struct Header {
-    pub begin_string: FIXString,
-    pub body_length: FIXInt,
-    pub msg_type: MsgType,
     pub sender_comp_id: FIXString,
     pub target_comp_id: FIXString,
     pub on_behalf_of_comp_id: Option<FIXString>,
@@ -22,8 +19,7 @@ pub struct Header {
     pub deliver_to_location_id: Option<FIXString>,
     pub poss_dup_flag: Option<PossDupFlag>,
     pub poss_resend: Option<PossResend>,
-    pub sending_time: UTCTimeOnly,
-    pub orig_sending_time: Option<UTCTimeOnly>
+    pub orig_sending_time: Option<UTCTimestamp>
 }
 
 pub struct Message {
@@ -89,13 +85,13 @@ pub enum MessageBody {
         ioi_shares: IOIShares,
         price: Option<FIXFloat>,
         currency: Option<FIXString>,
-        valid_until_time: Option<UTCTimeOnly>,
+        valid_until_time: Option<UTCTimestamp>,
         ioi_qlty_ind: Option<IOIQltyInd>,
         ioi_oth_svc: Option<IOIOthSvc>,
         ioi_natural_flag: Option<IOINaturalFlag>,
         ioi_qualifier: Option<IOIQualifier>,
         text: Option<FIXString>,
-        transact_time: Option<UTCTimeOnly>,
+        transact_time: Option<UTCTimestamp>,
         url_link: Option<FIXString>
     },
 
@@ -122,7 +118,7 @@ pub enum MessageBody {
         price: Option<FIXFloat>,
         currency: Option<FIXString>,
         trade_date: Option<UTCDateOnly>,
-        transact_time: Option<UTCTimeOnly>,
+        transact_time: Option<UTCTimestamp>,
         text: Option<FIXString>,
         url_link: Option<FIXString>,
         last_mkt: Option<FIXString>
@@ -167,7 +163,7 @@ pub enum MessageBody {
         peg_difference: Option<FIXFloat>,
         currency: Option<FIXString>,
         time_in_force: Option<TimeInForce>,
-        expire_time: Option<UTCTimeOnly>,
+        expire_time: Option<UTCTimestamp>,
         exec_inst: Option<ExecInst>,
         rule80_a: Option<Rule80A>,
         last_shares: FIXInt,
@@ -180,7 +176,7 @@ pub enum MessageBody {
         cum_qty: FIXInt,
         avg_px: FIXFloat,
         trade_date: Option<UTCDateOnly>,
-        transact_time: Option<UTCTimeOnly>,
+        transact_time: Option<UTCTimestamp>,
         report_to_exch: Option<ReportToExch>,
         commission: Option<FIXFloat>,
         comm_type: Option<CommType>,
@@ -216,7 +212,7 @@ pub enum MessageBody {
 
     /// News message. Message code: B
     News {
-        orig_time: Option<UTCTimeOnly>,
+        orig_time: Option<UTCTimestamp>,
         urgency: Option<Urgency>,
         headline: FIXString,
         relatd_sym: Option<FIXString>,
@@ -242,7 +238,7 @@ pub enum MessageBody {
     Email {
         email_thread_id: FIXString,
         email_type: EmailType,
-        orig_time: Option<UTCTimeOnly>,
+        orig_time: Option<UTCTimestamp>,
         subject: FIXString,
         relatd_sym: Option<FIXString>,
         symbol_sfx: Option<FIXString>,
@@ -303,7 +299,7 @@ pub enum MessageBody {
         io_iid: Option<FIXString>,
         quote_id: Option<FIXString>,
         time_in_force: Option<TimeInForce>,
-        expire_time: Option<UTCTimeOnly>,
+        expire_time: Option<UTCTimestamp>,
         commission: Option<FIXFloat>,
         comm_type: Option<CommType>,
         rule80_a: Option<Rule80A>,
@@ -361,7 +357,7 @@ pub enum MessageBody {
         peg_difference: Option<FIXFloat>,
         currency: Option<FIXString>,
         time_in_force: Option<TimeInForce>,
-        expire_time: Option<UTCTimeOnly>,
+        expire_time: Option<UTCTimestamp>,
         commission: Option<FIXFloat>,
         comm_type: Option<CommType>,
         rule80_a: Option<Rule80A>,
@@ -441,7 +437,7 @@ pub enum MessageBody {
         peg_difference: Option<FIXFloat>,
         currency: Option<FIXString>,
         time_in_force: Option<TimeInForce>,
-        expire_time: Option<UTCTimeOnly>,
+        expire_time: Option<UTCTimestamp>,
         commission: Option<FIXFloat>,
         comm_type: Option<CommType>,
         rule80_a: Option<Rule80A>,
@@ -515,7 +511,7 @@ pub enum MessageBody {
         currency: Option<FIXString>,
         avg_prx_precision: Option<FIXInt>,
         trade_date: UTCDateOnly,
-        transact_time: Option<UTCTimeOnly>,
+        transact_time: Option<UTCTimestamp>,
         settlmnt_typ: Option<SettlmntTyp>,
         fut_sett_date: Option<UTCDateOnly>,
         net_money: Option<FIXFloat>,
@@ -587,7 +583,7 @@ pub enum MessageBody {
         exec_broker: Option<FIXString>,
         alloc_id: FIXString,
         trade_date: UTCDateOnly,
-        transact_time: Option<UTCTimeOnly>,
+        transact_time: Option<UTCTimestamp>,
         alloc_status: AllocStatus,
         alloc_rej_code: Option<AllocRejCode>,
         text: Option<FIXString>
@@ -665,12 +661,12 @@ pub enum MessageBody {
         offer_px: Option<FIXFloat>,
         bid_size: Option<FIXInt>,
         offer_size: Option<FIXInt>,
-        valid_until_time: Option<UTCTimeOnly>,
+        valid_until_time: Option<UTCTimestamp>,
         bid_spot_rate: Option<FIXFloat>,
         offer_spot_rate: Option<FIXFloat>,
         bid_forward_points: Option<FIXFloat>,
         offer_forward_points: Option<FIXFloat>,
-        transact_time: Option<UTCTimeOnly>,
+        transact_time: Option<UTCTimestamp>,
         fut_sett_date: Option<UTCDateOnly>,
         ord_type: Option<OrdType>,
         fut_sett_date2: Option<UTCDateOnly>,
@@ -690,8 +686,8 @@ pub enum MessageBody {
         last_mkt: Option<FIXString>,
         side: Option<Side>,
         security_type: Option<SecurityType>,
-        effective_time: Option<UTCTimeOnly>,
-        transact_time: UTCTimeOnly,
+        effective_time: Option<UTCTimestamp>,
+        transact_time: UTCTimestamp,
         client_id: Option<FIXString>,
         exec_broker: Option<FIXString>,
         stand_inst_db_type: Option<StandInstDbType>,

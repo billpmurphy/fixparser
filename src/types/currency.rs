@@ -736,19 +736,12 @@ impl FIXValue for Currency {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use protocol::FIXValue;
+    use types::testutils::{check_decode_encode, check_no_decode};
 
     #[test]
     fn test_currency() {
-        // decode
-        assert_eq!(Currency::from_bytes(b"USD").unwrap(), Currency::USD);
-        assert_eq!(Currency::from_bytes(b"ZWL").unwrap(), Currency::ZWL);
-        assert!(Currency::from_bytes(b"UXA").is_none());
-
-        // encode
-        let mut v = Vec::new();
-        Currency::USD.to_bytes(&mut v);
-        Currency::ZWL.to_bytes(&mut v);
-        assert_eq!(&v, b"USDZWL");
+        check_decode_encode(b"USD", Currency::USD);
+        check_decode_encode(b"ZWL", Currency::ZWL);
+        check_no_decode::<Currency>(b"AXA");
     }
 }

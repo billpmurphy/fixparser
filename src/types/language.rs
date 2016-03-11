@@ -760,19 +760,12 @@ impl FIXValue for Language {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use protocol::FIXValue;
+    use types::testutils::{check_decode_encode, check_no_decode};
 
     #[test]
     fn test_language() {
-        // decode
-        assert_eq!(Language::from_bytes(b"EN").unwrap(), Language::EN);
-        assert_eq!(Language::from_bytes(b"UK").unwrap(), Language::UK);
-        assert!(Language::from_bytes(b"UX").is_none());
-
-        // encode
-        let mut v = Vec::new();
-        Language::EN.to_bytes(&mut v);
-        Language::UK.to_bytes(&mut v);
-        assert_eq!(&v, b"ENUK");
+        check_decode_encode(b"EN", Language::EN);
+        check_decode_encode(b"UK", Language::UK);
+        check_no_decode::<Language>(b"UX");
     }
 }

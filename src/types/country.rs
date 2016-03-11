@@ -1021,22 +1021,12 @@ impl FIXValue for Country {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use protocol::FIXValue;
+    use types::testutils::{check_decode_encode, check_no_decode};
 
     #[test]
     fn test_country() {
-        // decode
-        assert_eq!(Country::from_bytes(b"US").unwrap(), Country::US);
-        assert_eq!(Country::from_bytes(b"ZW").unwrap(), Country::ZW);
-        assert!(Country::from_bytes(b"UX").is_none());
-
-        // encode
-        let mut v = Vec::new();
-        Country::US.to_bytes(&mut v);
-        assert_eq!(&v, b"US");
-
-        v.clear();
-        Country::ZW.to_bytes(&mut v);
-        assert_eq!(&v, b"ZW");
+        check_decode_encode(b"US", Country::US);
+        check_decode_encode(b"ZW", Country::ZW);
+        check_no_decode::<Country>(b"UX");
     }
 }

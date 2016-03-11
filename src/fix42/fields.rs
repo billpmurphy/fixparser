@@ -1,134 +1,63 @@
 use protocol::FIXValue;
+pub use common::Adjustment as Adjustment;
+pub use common::AdvSide as AdvSide;
+pub use common::AdvTransType as AdvTransType;
+pub use common::AggregatedBook as AggregatedBook;
+pub use common::AllocHandlInst as AllocHandlInst;
+pub use common::AllocLinkType as AllocLinkType;
+pub use common::BasisPxType as BasisPxType;
+pub use common::Benchmark as Benchmark;
+pub use common::CorporateAction as CorporateAction;
+pub use common::CoveredOrUncovered as CoveredOrUncovered;
+pub use common::CustomerOrFirm as CustomerOrFirm;
+pub use common::CxlRejResponseTo as CxlRejResponseTo;
+pub use common::DeleteReason as DeleteReason;
+pub use common::DueToRelated as DueToRelated;
+pub use common::EmailType as EmailType;
+pub use common::EncryptMethod as EncryptMethod;
+pub use common::ExchangeForPhysical as ExchangeForPhysical;
+pub use common::ExecTransType as ExecTransType;
+pub use common::ForexReq as ForexReq;
+pub use common::GTBookingInst as GTBookingInst;
+pub use common::GapFillFlag as GapFillFlag;
+pub use common::HaltReasonChar as HaltReasonChar;
+pub use common::HandlInst as HandlInst;
+pub use common::IOINaturalFlag as IOINaturalFlag;
+pub use common::IOIQltyInd as IOIQltyInd;
+pub use common::IOIShares as IOIShares;
+pub use common::IOITransType as IOITransType;
+pub use common::InViewOfCommon as InViewOfCommon;
+pub use common::IncTaxInd as IncTaxInd;
+pub use common::LastCapacity as LastCapacity;
+pub use common::LocateReqd as LocateReqd;
+pub use common::MDUpdateAction as MDUpdateAction;
+pub use common::MDUpdateType as MDUpdateType;
+pub use common::MsgDirection as MsgDirection;
+pub use common::MultiLegReportingType as MultiLegReportingType;
+pub use common::NetGrossInd as NetGrossInd;
+pub use common::NotifyBrokerOfCredit as NotifyBrokerOfCredit;
+pub use common::PossDupFlag as PossDupFlag;
+pub use common::ProcessCode as ProcessCode;
+pub use common::ProgRptReqs as ProgRptReqs;
+pub use common::PutOrCall as PutOrCall;
+pub use common::QuoteCondition as QuoteCondition;
+pub use common::QuoteRequestType as QuoteRequestType;
+pub use common::QuoteResponseLevel as QuoteResponseLevel;
+pub use common::ReportToExch as ReportToExch;
+pub use common::ResetSeqNumFlag as ResetSeqNumFlag;
+pub use common::RoutingType as RoutingType;
+pub use common::SecurityRequestType as SecurityRequestType;
+pub use common::SettlCurrFxRateCalc as SettlCurrFxRateCalc;
+pub use common::SettlLocation as SettlLocation;
+pub use common::SolicitedFlag as SolicitedFlag;
+pub use common::SubscriptionRequestType as SubscriptionRequestType;
+pub use common::TickDirection as TickDirection;
+pub use common::TradSesMethod as TradSesMethod;
+pub use common::TradSesMode as TradSesMode;
+pub use common::TradeType as TradeType;
+pub use common::UnsolicitedIndicator as UnsolicitedIndicator;
+pub use common::Urgency as Urgency;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Adjustment {
-    Cancel = b'1' as isize,
-    Error = b'2' as isize,
-    Correction = b'3' as isize,
-}
-
-impl FIXValue for Adjustment {
-    fn from_bytes(bytes: &[u8]) -> Option<Adjustment> {
-        match bytes {
-            b"1" => Some(Adjustment::Cancel),
-            b"2" => Some(Adjustment::Error),
-            b"3" => Some(Adjustment::Correction),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum AdvSide {
-    Buy = b'B' as isize,
-    Sell = b'S' as isize,
-    Trade = b'T' as isize,
-    Cross = b'X' as isize,
-}
-
-impl FIXValue for AdvSide {
-    fn from_bytes(bytes: &[u8]) -> Option<AdvSide> {
-        match bytes {
-            b"B" => Some(AdvSide::Buy),
-            b"S" => Some(AdvSide::Sell),
-            b"T" => Some(AdvSide::Trade),
-            b"X" => Some(AdvSide::Cross),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum AdvTransType {
-    Cancel = b'C' as isize,
-    New = b'N' as isize,
-    Replace = b'R' as isize,
-}
-
-impl FIXValue for AdvTransType {
-    fn from_bytes(bytes: &[u8]) -> Option<AdvTransType> {
-        match bytes {
-            b"C" => Some(AdvTransType::Cancel),
-            b"N" => Some(AdvTransType::New),
-            b"R" => Some(AdvTransType::Replace),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum AggregatedBook {
-    No = b'N' as isize,
-    Yes = b'Y' as isize,
-}
-
-impl FIXValue for AggregatedBook {
-    fn from_bytes(bytes: &[u8]) -> Option<AggregatedBook> {
-        match bytes {
-            b"N" => Some(AggregatedBook::No),
-            b"Y" => Some(AggregatedBook::Yes),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum AllocHandlInst {
-    Match = b'1' as isize,
-    Forward = b'2' as isize,
-    ForwardAndMatch = b'3' as isize,
-}
-
-impl FIXValue for AllocHandlInst {
-    fn from_bytes(bytes: &[u8]) -> Option<AllocHandlInst> {
-        match bytes {
-            b"1" => Some(AllocHandlInst::Match),
-            b"2" => Some(AllocHandlInst::Forward),
-            b"3" => Some(AllocHandlInst::ForwardAndMatch),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum AllocLinkType {
-    FXNetting = b'0' as isize,
-    FXSwap = b'1' as isize,
-}
-
-impl FIXValue for AllocLinkType {
-    fn from_bytes(bytes: &[u8]) -> Option<AllocLinkType> {
-        match bytes {
-            b"0" => Some(AllocLinkType::FXNetting),
-            b"1" => Some(AllocLinkType::FXSwap),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AllocRejCode {
@@ -215,82 +144,6 @@ impl FIXValue for AllocTransType {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum BasisPxType {
-    ClosingPriceAtMorningSession = b'2' as isize,
-    ClosingPrice = b'3' as isize,
-    CurrentPrice = b'4' as isize,
-    Sq = b'5' as isize,
-    VwapThroughADay = b'6' as isize,
-    VwapThroughAMorningSession = b'7' as isize,
-    VwapThroughAnAfternoonSession = b'8' as isize,
-    VwapThroughADayExceptYori = b'9' as isize,
-    VwapThroughAMorningSessionExceptYori = b'A' as isize,
-    VwapThroughAnAfternoonSessionExceptYori = b'B' as isize,
-    Strike = b'C' as isize,
-    Open = b'D' as isize,
-    Others = b'Z' as isize,
-}
-
-impl FIXValue for BasisPxType {
-    fn from_bytes(bytes: &[u8]) -> Option<BasisPxType> {
-        match bytes {
-            b"2" => Some(BasisPxType::ClosingPriceAtMorningSession),
-            b"3" => Some(BasisPxType::ClosingPrice),
-            b"4" => Some(BasisPxType::CurrentPrice),
-            b"5" => Some(BasisPxType::Sq),
-            b"6" => Some(BasisPxType::VwapThroughADay),
-            b"7" => Some(BasisPxType::VwapThroughAMorningSession),
-            b"8" => Some(BasisPxType::VwapThroughAnAfternoonSession),
-            b"9" => Some(BasisPxType::VwapThroughADayExceptYori),
-            b"A" => Some(BasisPxType::VwapThroughAMorningSessionExceptYori),
-            b"B" => Some(BasisPxType::VwapThroughAnAfternoonSessionExceptYori),
-            b"C" => Some(BasisPxType::Strike),
-            b"D" => Some(BasisPxType::Open),
-            b"Z" => Some(BasisPxType::Others),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Benchmark {
-    Curve = b'1' as isize,
-    FiveYr = b'2' as isize,
-    Old5 = b'3' as isize,
-    TenYr = b'4' as isize,
-    Old10 = b'5' as isize,
-    ThirtyYr = b'6' as isize,
-    Old30 = b'7' as isize,
-    ThreeMoLibor = b'8' as isize,
-    SixMoLibor = b'9' as isize,
-}
-
-impl FIXValue for Benchmark {
-    fn from_bytes(bytes: &[u8]) -> Option<Benchmark> {
-        match bytes {
-            b"1" => Some(Benchmark::Curve),
-            b"2" => Some(Benchmark::FiveYr),
-            b"3" => Some(Benchmark::Old5),
-            b"4" => Some(Benchmark::TenYr),
-            b"5" => Some(Benchmark::Old10),
-            b"6" => Some(Benchmark::ThirtyYr),
-            b"7" => Some(Benchmark::Old30),
-            b"8" => Some(Benchmark::ThreeMoLibor),
-            b"9" => Some(Benchmark::SixMoLibor),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum BidRequestTransType {
     Cancel = b'C' as isize,
     No = b'N' as isize,
@@ -361,72 +214,6 @@ impl FIXValue for CommType {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum CorporateAction {
-    ExDividend = b'A' as isize,
-    ExDistribution = b'B' as isize,
-    ExRights = b'C' as isize,
-    New = b'D' as isize,
-    ExInterest = b'E' as isize,
-}
-
-impl FIXValue for CorporateAction {
-    fn from_bytes(bytes: &[u8]) -> Option<CorporateAction> {
-        match bytes {
-            b"A" => Some(CorporateAction::ExDividend),
-            b"B" => Some(CorporateAction::ExDistribution),
-            b"C" => Some(CorporateAction::ExRights),
-            b"D" => Some(CorporateAction::New),
-            b"E" => Some(CorporateAction::ExInterest),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum CoveredOrUncovered {
-    Covered = b'0' as isize,
-    Uncovered = b'1' as isize,
-}
-
-impl FIXValue for CoveredOrUncovered {
-    fn from_bytes(bytes: &[u8]) -> Option<CoveredOrUncovered> {
-        match bytes {
-            b"0" => Some(CoveredOrUncovered::Covered),
-            b"1" => Some(CoveredOrUncovered::Uncovered),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum CustomerOrFirm {
-    Customer = b'0' as isize,
-    Firm = b'1' as isize,
-}
-
-impl FIXValue for CustomerOrFirm {
-    fn from_bytes(bytes: &[u8]) -> Option<CustomerOrFirm> {
-        match bytes {
-            b"0" => Some(CustomerOrFirm::Customer),
-            b"1" => Some(CustomerOrFirm::Firm),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CxlRejReason {
     TooLateToCancel = b'0' as isize,
     UnknownOrder = b'1' as isize,
@@ -441,26 +228,6 @@ impl FIXValue for CxlRejReason {
             b"1" => Some(CxlRejReason::UnknownOrder),
             b"2" => Some(CxlRejReason::BrokerOption),
             b"3" => Some(CxlRejReason::OrderAlreadyInPendingCancelOrPendingReplaceStatus),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum CxlRejResponseTo {
-    OrderCancelRequest = b'1' as isize,
-    OrderCancelReplaceRequest = b'2' as isize,
-}
-
-impl FIXValue for CxlRejResponseTo {
-    fn from_bytes(bytes: &[u8]) -> Option<CxlRejResponseTo> {
-        match bytes {
-            b"1" => Some(CxlRejResponseTo::OrderCancelRequest),
-            b"2" => Some(CxlRejResponseTo::OrderCancelReplaceRequest),
             _ => None
         }
     }
@@ -499,26 +266,6 @@ impl FIXValue for DKReason {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum DeleteReason {
-    Cancelation = b'0' as isize,
-    Error = b'1' as isize,
-}
-
-impl FIXValue for DeleteReason {
-    fn from_bytes(bytes: &[u8]) -> Option<DeleteReason> {
-        match bytes {
-            b"0" => Some(DeleteReason::Cancelation),
-            b"1" => Some(DeleteReason::Error),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum DiscretionInst {
     RelatedToDisplayedPrice = b'0' as isize,
     RelatedToMarketPrice = b'1' as isize,
@@ -537,98 +284,6 @@ impl FIXValue for DiscretionInst {
             b"3" => Some(DiscretionInst::RelatedToLocalPrimaryPrice),
             b"4" => Some(DiscretionInst::RelatedToMidpointPrice),
             b"5" => Some(DiscretionInst::RelatedToLastTradePrice),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum DueToRelated {
-    No = b'N' as isize,
-    Yes = b'Y' as isize,
-}
-
-impl FIXValue for DueToRelated {
-    fn from_bytes(bytes: &[u8]) -> Option<DueToRelated> {
-        match bytes {
-            b"N" => Some(DueToRelated::No),
-            b"Y" => Some(DueToRelated::Yes),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum EmailType {
-    New = b'0' as isize,
-    Reply = b'1' as isize,
-    AdminReply = b'2' as isize,
-}
-
-impl FIXValue for EmailType {
-    fn from_bytes(bytes: &[u8]) -> Option<EmailType> {
-        match bytes {
-            b"0" => Some(EmailType::New),
-            b"1" => Some(EmailType::Reply),
-            b"2" => Some(EmailType::AdminReply),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum EncryptMethod {
-    None = b'0' as isize,
-    Pkcs = b'1' as isize,
-    Des = b'2' as isize,
-    PkcsDes = b'3' as isize,
-    PgpDes = b'4' as isize,
-    PgpDesMd5 = b'5' as isize,
-    PemDesMd5 = b'6' as isize,
-}
-
-impl FIXValue for EncryptMethod {
-    fn from_bytes(bytes: &[u8]) -> Option<EncryptMethod> {
-        match bytes {
-            b"0" => Some(EncryptMethod::None),
-            b"1" => Some(EncryptMethod::Pkcs),
-            b"2" => Some(EncryptMethod::Des),
-            b"3" => Some(EncryptMethod::PkcsDes),
-            b"4" => Some(EncryptMethod::PgpDes),
-            b"5" => Some(EncryptMethod::PgpDesMd5),
-            b"6" => Some(EncryptMethod::PemDesMd5),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ExchangeForPhysical {
-    No = b'N' as isize,
-    Yes = b'Y' as isize,
-}
-
-impl FIXValue for ExchangeForPhysical {
-    fn from_bytes(bytes: &[u8]) -> Option<ExchangeForPhysical> {
-        match bytes {
-            b"N" => Some(ExchangeForPhysical::No),
-            b"Y" => Some(ExchangeForPhysical::Yes),
             _ => None
         }
     }
@@ -741,30 +396,6 @@ impl FIXValue for ExecRestatementReason {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ExecTransType {
-    New = b'0' as isize,
-    Cancel = b'1' as isize,
-    Correct = b'2' as isize,
-    Status = b'3' as isize,
-}
-
-impl FIXValue for ExecTransType {
-    fn from_bytes(bytes: &[u8]) -> Option<ExecTransType> {
-        match bytes {
-            b"0" => Some(ExecTransType::New),
-            b"1" => Some(ExecTransType::Cancel),
-            b"2" => Some(ExecTransType::Correct),
-            b"3" => Some(ExecTransType::Status),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ExecType {
     New = b'0' as isize,
     PartialFill = b'1' as isize,
@@ -829,118 +460,6 @@ impl FIXValue for FinancialStatus {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ForexReq {
-    No = b'N' as isize,
-    Yes = b'Y' as isize,
-}
-
-impl FIXValue for ForexReq {
-    fn from_bytes(bytes: &[u8]) -> Option<ForexReq> {
-        match bytes {
-            b"N" => Some(ForexReq::No),
-            b"Y" => Some(ForexReq::Yes),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum GTBookingInst {
-    BookOutAllTradesOnDayOfExecution = b'0' as isize,
-    AccumulateExecutionsUntilOrderIsFilledOrExpires = b'1' as isize,
-    AccumulateUntilVerballyNotifiedOtherwise = b'2' as isize,
-}
-
-impl FIXValue for GTBookingInst {
-    fn from_bytes(bytes: &[u8]) -> Option<GTBookingInst> {
-        match bytes {
-            b"0" => Some(GTBookingInst::BookOutAllTradesOnDayOfExecution),
-            b"1" => Some(GTBookingInst::AccumulateExecutionsUntilOrderIsFilledOrExpires),
-            b"2" => Some(GTBookingInst::AccumulateUntilVerballyNotifiedOtherwise),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum GapFillFlag {
-    No = b'N' as isize,
-    Yes = b'Y' as isize,
-}
-
-impl FIXValue for GapFillFlag {
-    fn from_bytes(bytes: &[u8]) -> Option<GapFillFlag> {
-        match bytes {
-            b"N" => Some(GapFillFlag::No),
-            b"Y" => Some(GapFillFlag::Yes),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum HaltReasonChar {
-    NewsDissemination = b'D' as isize,
-    OrderInflux = b'E' as isize,
-    OrderImbalance = b'I' as isize,
-    AdditionalInformation = b'M' as isize,
-    NewsPending = b'P' as isize,
-    EquipmentChangeover = b'X' as isize,
-}
-
-impl FIXValue for HaltReasonChar {
-    fn from_bytes(bytes: &[u8]) -> Option<HaltReasonChar> {
-        match bytes {
-            b"D" => Some(HaltReasonChar::NewsDissemination),
-            b"E" => Some(HaltReasonChar::OrderInflux),
-            b"I" => Some(HaltReasonChar::OrderImbalance),
-            b"M" => Some(HaltReasonChar::AdditionalInformation),
-            b"P" => Some(HaltReasonChar::NewsPending),
-            b"X" => Some(HaltReasonChar::EquipmentChangeover),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum HandlInst {
-    AutomatedExecutionOrderPrivateNoBrokerIntervention = b'1' as isize,
-    AutomatedExecutionOrderPublicBrokerInterventionOk = b'2' as isize,
-    ManualOrderBestExecution = b'3' as isize,
-}
-
-impl FIXValue for HandlInst {
-    fn from_bytes(bytes: &[u8]) -> Option<HandlInst> {
-        match bytes {
-            b"1" => Some(HandlInst::AutomatedExecutionOrderPrivateNoBrokerIntervention),
-            b"2" => Some(HandlInst::AutomatedExecutionOrderPublicBrokerInterventionOk),
-            b"3" => Some(HandlInst::ManualOrderBestExecution),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum IDSource {
     Cusip = b'1' as isize,
     Sedol = b'2' as isize,
@@ -965,48 +484,6 @@ impl FIXValue for IDSource {
             b"7" => Some(IDSource::IsoCountryCode),
             b"8" => Some(IDSource::ExchangeSymbol),
             b"9" => Some(IDSource::ConsolidatedTapeAssociation),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum IOINaturalFlag {
-    No = b'N' as isize,
-    Yes = b'Y' as isize,
-}
-
-impl FIXValue for IOINaturalFlag {
-    fn from_bytes(bytes: &[u8]) -> Option<IOINaturalFlag> {
-        match bytes {
-            b"N" => Some(IOINaturalFlag::No),
-            b"Y" => Some(IOINaturalFlag::Yes),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum IOIQltyInd {
-    High = b'H' as isize,
-    Low = b'L' as isize,
-    Medium = b'M' as isize,
-}
-
-impl FIXValue for IOIQltyInd {
-    fn from_bytes(bytes: &[u8]) -> Option<IOIQltyInd> {
-        match bytes {
-            b"H" => Some(IOIQltyInd::High),
-            b"L" => Some(IOIQltyInd::Low),
-            b"M" => Some(IOIQltyInd::Medium),
             _ => None
         }
     }
@@ -1065,114 +542,6 @@ impl FIXValue for IOIQualifier {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum IOIShares {
-    Large = b'L' as isize,
-    Medium = b'M' as isize,
-    Small = b'S' as isize,
-}
-
-impl FIXValue for IOIShares {
-    fn from_bytes(bytes: &[u8]) -> Option<IOIShares> {
-        match bytes {
-            b"L" => Some(IOIShares::Large),
-            b"M" => Some(IOIShares::Medium),
-            b"S" => Some(IOIShares::Small),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum IOITransType {
-    Cancel = b'C' as isize,
-    New = b'N' as isize,
-    Replace = b'R' as isize,
-}
-
-impl FIXValue for IOITransType {
-    fn from_bytes(bytes: &[u8]) -> Option<IOITransType> {
-        match bytes {
-            b"C" => Some(IOITransType::Cancel),
-            b"N" => Some(IOITransType::New),
-            b"R" => Some(IOITransType::Replace),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum InViewOfCommon {
-    No = b'N' as isize,
-    Yes = b'Y' as isize,
-}
-
-impl FIXValue for InViewOfCommon {
-    fn from_bytes(bytes: &[u8]) -> Option<InViewOfCommon> {
-        match bytes {
-            b"N" => Some(InViewOfCommon::No),
-            b"Y" => Some(InViewOfCommon::Yes),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum IncTaxInd {
-    Net = b'1' as isize,
-    Gross = b'2' as isize,
-}
-
-impl FIXValue for IncTaxInd {
-    fn from_bytes(bytes: &[u8]) -> Option<IncTaxInd> {
-        match bytes {
-            b"1" => Some(IncTaxInd::Net),
-            b"2" => Some(IncTaxInd::Gross),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum LastCapacity {
-    Agent = b'1' as isize,
-    CrossAsAgent = b'2' as isize,
-    CrossAsPrincipal = b'3' as isize,
-    Principal = b'4' as isize,
-}
-
-impl FIXValue for LastCapacity {
-    fn from_bytes(bytes: &[u8]) -> Option<LastCapacity> {
-        match bytes {
-            b"1" => Some(LastCapacity::Agent),
-            b"2" => Some(LastCapacity::CrossAsAgent),
-            b"3" => Some(LastCapacity::CrossAsPrincipal),
-            b"4" => Some(LastCapacity::Principal),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum LiquidityIndType {
     FiveDayMovingAverage = b'1' as isize,
     TwentyDayMovingAverage = b'2' as isize,
@@ -1207,26 +576,6 @@ impl FIXValue for ListExecInstType {
         match bytes {
             b"1" => Some(ListExecInstType::Immediate),
             b"2" => Some(ListExecInstType::WaitForExecuteInstruction),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum LocateReqd {
-    No = b'N' as isize,
-    Yes = b'Y' as isize,
-}
-
-impl FIXValue for LocateReqd {
-    fn from_bytes(bytes: &[u8]) -> Option<LocateReqd> {
-        match bytes {
-            b"N" => Some(LocateReqd::No),
-            b"Y" => Some(LocateReqd::Yes),
             _ => None
         }
     }
@@ -1307,48 +656,6 @@ impl FIXValue for MDReqRejReason {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum MDUpdateAction {
-    New = b'0' as isize,
-    Change = b'1' as isize,
-    Delete = b'2' as isize,
-}
-
-impl FIXValue for MDUpdateAction {
-    fn from_bytes(bytes: &[u8]) -> Option<MDUpdateAction> {
-        match bytes {
-            b"0" => Some(MDUpdateAction::New),
-            b"1" => Some(MDUpdateAction::Change),
-            b"2" => Some(MDUpdateAction::Delete),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum MDUpdateType {
-    FullRefresh = b'0' as isize,
-    IncrementalRefresh = b'1' as isize,
-}
-
-impl FIXValue for MDUpdateType {
-    fn from_bytes(bytes: &[u8]) -> Option<MDUpdateType> {
-        match bytes {
-            b"0" => Some(MDUpdateType::FullRefresh),
-            b"1" => Some(MDUpdateType::IncrementalRefresh),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum MessageEncoding {
     EucJp,
     Iso2022Jp,
@@ -1402,26 +709,6 @@ impl FIXValue for MiscFeeType {
             b"7" => Some(MiscFeeType::Other),
             b"8" => Some(MiscFeeType::Markup),
             b"9" => Some(MiscFeeType::ConsumptionTax),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum MsgDirection {
-    Receive = b'R' as isize,
-    Send = b'S' as isize,
-}
-
-impl FIXValue for MsgDirection {
-    fn from_bytes(bytes: &[u8]) -> Option<MsgDirection> {
-        match bytes {
-            b"R" => Some(MsgDirection::Receive),
-            b"S" => Some(MsgDirection::Send),
             _ => None
         }
     }
@@ -1530,68 +817,6 @@ impl FIXValue for MsgType {
             b"X" => Some(MsgType::MarketDataIncrementalRefresh),
             b"Y" => Some(MsgType::MarketDataRequestReject),
             b"Z" => Some(MsgType::QuoteCancel),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum MultiLegReportingType {
-    SingleSecurity = b'1' as isize,
-    IndividualLegOfAMultiLegSecurity = b'2' as isize,
-    MultiLegSecurity = b'3' as isize,
-}
-
-impl FIXValue for MultiLegReportingType {
-    fn from_bytes(bytes: &[u8]) -> Option<MultiLegReportingType> {
-        match bytes {
-            b"1" => Some(MultiLegReportingType::SingleSecurity),
-            b"2" => Some(MultiLegReportingType::IndividualLegOfAMultiLegSecurity),
-            b"3" => Some(MultiLegReportingType::MultiLegSecurity),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum NetGrossInd {
-    Net = b'1' as isize,
-    Gross = b'2' as isize,
-}
-
-impl FIXValue for NetGrossInd {
-    fn from_bytes(bytes: &[u8]) -> Option<NetGrossInd> {
-        match bytes {
-            b"1" => Some(NetGrossInd::Net),
-            b"2" => Some(NetGrossInd::Gross),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum NotifyBrokerOfCredit {
-    No = b'N' as isize,
-    Yes = b'Y' as isize,
-}
-
-impl FIXValue for NotifyBrokerOfCredit {
-    fn from_bytes(bytes: &[u8]) -> Option<NotifyBrokerOfCredit> {
-        match bytes {
-            b"N" => Some(NotifyBrokerOfCredit::No),
-            b"Y" => Some(NotifyBrokerOfCredit::Yes),
             _ => None
         }
     }
@@ -1778,26 +1003,6 @@ impl FIXValue for OrdType {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum PossDupFlag {
-    No = b'N' as isize,
-    Yes = b'Y' as isize,
-}
-
-impl FIXValue for PossDupFlag {
-    fn from_bytes(bytes: &[u8]) -> Option<PossDupFlag> {
-        match bytes {
-            b"N" => Some(PossDupFlag::No),
-            b"Y" => Some(PossDupFlag::Yes),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PossResend {
     No = b'N' as isize,
     Yes = b'Y' as isize,
@@ -1830,78 +1035,6 @@ impl FIXValue for PriceType {
             b"1" => Some(PriceType::Percentage),
             b"2" => Some(PriceType::PerShare),
             b"3" => Some(PriceType::FixedAmount),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ProcessCode {
-    Regular = b'0' as isize,
-    SoftDollar = b'1' as isize,
-    StepIn = b'2' as isize,
-    StepOut = b'3' as isize,
-    SoftDollarStepIn = b'4' as isize,
-    SoftDollarStepOut = b'5' as isize,
-    PlanSponsor = b'6' as isize,
-}
-
-impl FIXValue for ProcessCode {
-    fn from_bytes(bytes: &[u8]) -> Option<ProcessCode> {
-        match bytes {
-            b"0" => Some(ProcessCode::Regular),
-            b"1" => Some(ProcessCode::SoftDollar),
-            b"2" => Some(ProcessCode::StepIn),
-            b"3" => Some(ProcessCode::StepOut),
-            b"4" => Some(ProcessCode::SoftDollarStepIn),
-            b"5" => Some(ProcessCode::SoftDollarStepOut),
-            b"6" => Some(ProcessCode::PlanSponsor),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ProgRptReqs {
-    BuysideExplicitlyRequestsStatusUsingStatusrequest = b'1' as isize,
-    SellsidePeriodicallySendsStatusUsingListstatusPeriodOptionallySpecifiedInProgressperiod = b'2' as isize,
-    RealTimeExecutionReports = b'3' as isize,
-}
-
-impl FIXValue for ProgRptReqs {
-    fn from_bytes(bytes: &[u8]) -> Option<ProgRptReqs> {
-        match bytes {
-            b"1" => Some(ProgRptReqs::BuysideExplicitlyRequestsStatusUsingStatusrequest),
-            b"2" => Some(ProgRptReqs::SellsidePeriodicallySendsStatusUsingListstatusPeriodOptionallySpecifiedInProgressperiod),
-            b"3" => Some(ProgRptReqs::RealTimeExecutionReports),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum PutOrCall {
-    Put = b'0' as isize,
-    Call = b'1' as isize,
-}
-
-impl FIXValue for PutOrCall {
-    fn from_bytes(bytes: &[u8]) -> Option<PutOrCall> {
-        match bytes {
-            b"0" => Some(PutOrCall::Put),
-            b"1" => Some(PutOrCall::Call),
             _ => None
         }
     }
@@ -1954,40 +1087,6 @@ impl FIXValue for QuoteCancelType {
             b"2" => Some(QuoteCancelType::CancelForSecurityType),
             b"3" => Some(QuoteCancelType::CancelForUnderlyingSymbol),
             b"4" => Some(QuoteCancelType::CancelForAllQuotes),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum QuoteCondition {
-    Open = b'A' as isize,
-    Closed = b'B' as isize,
-    ExchangeBest = b'C' as isize,
-    ConsolidatedBest = b'D' as isize,
-    Locked = b'E' as isize,
-    Crossed = b'F' as isize,
-    Depth = b'G' as isize,
-    FastTrading = b'H' as isize,
-    NonFirm = b'I' as isize,
-}
-
-impl FIXValue for QuoteCondition {
-    fn from_bytes(bytes: &[u8]) -> Option<QuoteCondition> {
-        match bytes {
-            b"A" => Some(QuoteCondition::Open),
-            b"B" => Some(QuoteCondition::Closed),
-            b"C" => Some(QuoteCondition::ExchangeBest),
-            b"D" => Some(QuoteCondition::ConsolidatedBest),
-            b"E" => Some(QuoteCondition::Locked),
-            b"F" => Some(QuoteCondition::Crossed),
-            b"G" => Some(QuoteCondition::Depth),
-            b"H" => Some(QuoteCondition::FastTrading),
-            b"I" => Some(QuoteCondition::NonFirm),
             _ => None
         }
     }
@@ -2066,112 +1165,6 @@ impl FIXValue for QuoteRejectReason {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum QuoteRequestType {
-    Manual = b'1' as isize,
-    Automatic = b'2' as isize,
-}
-
-impl FIXValue for QuoteRequestType {
-    fn from_bytes(bytes: &[u8]) -> Option<QuoteRequestType> {
-        match bytes {
-            b"1" => Some(QuoteRequestType::Manual),
-            b"2" => Some(QuoteRequestType::Automatic),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum QuoteResponseLevel {
-    NoAcknowledgement = b'0' as isize,
-    AcknowledgeOnlyNegativeOrErroneousQuotes = b'1' as isize,
-    AcknowledgeEachQuoteMessages = b'2' as isize,
-}
-
-impl FIXValue for QuoteResponseLevel {
-    fn from_bytes(bytes: &[u8]) -> Option<QuoteResponseLevel> {
-        match bytes {
-            b"0" => Some(QuoteResponseLevel::NoAcknowledgement),
-            b"1" => Some(QuoteResponseLevel::AcknowledgeOnlyNegativeOrErroneousQuotes),
-            b"2" => Some(QuoteResponseLevel::AcknowledgeEachQuoteMessages),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ReportToExch {
-    No = b'N' as isize,
-    Yes = b'Y' as isize,
-}
-
-impl FIXValue for ReportToExch {
-    fn from_bytes(bytes: &[u8]) -> Option<ReportToExch> {
-        match bytes {
-            b"N" => Some(ReportToExch::No),
-            b"Y" => Some(ReportToExch::Yes),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ResetSeqNumFlag {
-    No = b'N' as isize,
-    Yes = b'Y' as isize,
-}
-
-impl FIXValue for ResetSeqNumFlag {
-    fn from_bytes(bytes: &[u8]) -> Option<ResetSeqNumFlag> {
-        match bytes {
-            b"N" => Some(ResetSeqNumFlag::No),
-            b"Y" => Some(ResetSeqNumFlag::Yes),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum RoutingType {
-    TargetFirm = b'1' as isize,
-    TargetList = b'2' as isize,
-    BlockFirm = b'3' as isize,
-    BlockList = b'4' as isize,
-}
-
-impl FIXValue for RoutingType {
-    fn from_bytes(bytes: &[u8]) -> Option<RoutingType> {
-        match bytes {
-            b"1" => Some(RoutingType::TargetFirm),
-            b"2" => Some(RoutingType::TargetList),
-            b"3" => Some(RoutingType::BlockFirm),
-            b"4" => Some(RoutingType::BlockList),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Rule80A {
     AgencySingleOrder = b'A' as isize,
     ShortExemptTransactionB = b'B' as isize,
@@ -2224,30 +1217,6 @@ impl FIXValue for Rule80A {
             b"X" => Some(Rule80A::ShortExemptTransactionForMemberCompetingMarketMakerNotAffiliatedWithTheFirmClearingTheTrade),
             b"Y" => Some(Rule80A::ProgramOrderNonIndexArbForOtherAgency),
             b"Z" => Some(Rule80A::ShortExemptTransactionForNonMemberCompetingMarketMaker),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum SecurityRequestType {
-    RequestSecurityIdentityAndSpecifications = b'0' as isize,
-    RequestSecurityIdentityForTheSpecificationsProvided = b'1' as isize,
-    RequestListSecurityTypes = b'2' as isize,
-    RequestListSecurities = b'3' as isize,
-}
-
-impl FIXValue for SecurityRequestType {
-    fn from_bytes(bytes: &[u8]) -> Option<SecurityRequestType> {
-        match bytes {
-            b"0" => Some(SecurityRequestType::RequestSecurityIdentityAndSpecifications),
-            b"1" => Some(SecurityRequestType::RequestSecurityIdentityForTheSpecificationsProvided),
-            b"2" => Some(SecurityRequestType::RequestListSecurityTypes),
-            b"3" => Some(SecurityRequestType::RequestListSecurities),
             _ => None
         }
     }
@@ -2512,26 +1481,6 @@ impl FIXValue for SessionRejectReason {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum SettlCurrFxRateCalc {
-    Multiply = b'M' as isize,
-    Divide = b'D' as isize,
-}
-
-impl FIXValue for SettlCurrFxRateCalc {
-    fn from_bytes(bytes: &[u8]) -> Option<SettlCurrFxRateCalc> {
-        match bytes {
-            b"M" => Some(SettlCurrFxRateCalc::Multiply),
-            b"D" => Some(SettlCurrFxRateCalc::Divide),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SettlInstMode {
     Default = b'0' as isize,
     StandingInstructionsProvided = b'1' as isize,
@@ -2594,44 +1543,6 @@ impl FIXValue for SettlInstTransType {
 
     fn to_bytes(&self, mut v: &mut Vec<u8>) {
         v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum SettlLocation {
-    Cedel,
-    DepositoryTrustCompany,
-    Euroclear,
-    FederalBookEntry,
-    LocalMarketSettleLocation,
-    Physical,
-    ParticipantTrustCompany,
-}
-
-impl FIXValue for SettlLocation {
-    fn from_bytes(bytes: &[u8]) -> Option<SettlLocation> {
-        match bytes {
-            b"CED" => Some(SettlLocation::Cedel),
-            b"DTC" => Some(SettlLocation::DepositoryTrustCompany),
-            b"EUR" => Some(SettlLocation::Euroclear),
-            b"FED" => Some(SettlLocation::FederalBookEntry),
-            b"ISO Country Code" => Some(SettlLocation::LocalMarketSettleLocation),
-            b"PNY" => Some(SettlLocation::Physical),
-            b"PTC" => Some(SettlLocation::ParticipantTrustCompany),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        match *self {
-            SettlLocation::Cedel => v.extend(b"CED"),
-            SettlLocation::DepositoryTrustCompany => v.extend(b"DTC"),
-            SettlLocation::Euroclear => v.extend(b"EUR"),
-            SettlLocation::FederalBookEntry => v.extend(b"FED"),
-            SettlLocation::LocalMarketSettleLocation => v.extend(b"ISO Country Code"),
-            SettlLocation::Physical => v.extend(b"PNY"),
-            SettlLocation::ParticipantTrustCompany => v.extend(b"PTC"),
-        }
     }
 }
 
@@ -2706,26 +1617,6 @@ impl FIXValue for Side {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum SolicitedFlag {
-    No = b'N' as isize,
-    Yes = b'Y' as isize,
-}
-
-impl FIXValue for SolicitedFlag {
-    fn from_bytes(bytes: &[u8]) -> Option<SolicitedFlag> {
-        match bytes {
-            b"N" => Some(SolicitedFlag::No),
-            b"Y" => Some(SolicitedFlag::Yes),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum StandInstDbType {
     Other = b'0' as isize,
     DtcSid = b'1' as isize,
@@ -2740,52 +1631,6 @@ impl FIXValue for StandInstDbType {
             b"1" => Some(StandInstDbType::DtcSid),
             b"2" => Some(StandInstDbType::ThomsonAlert),
             b"3" => Some(StandInstDbType::AGlobalCustodian),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum SubscriptionRequestType {
-    Snapshot = b'0' as isize,
-    SnapshotPlusUpdates = b'1' as isize,
-    DisablePreviousSnapshotPlusUpdateRequest = b'2' as isize,
-}
-
-impl FIXValue for SubscriptionRequestType {
-    fn from_bytes(bytes: &[u8]) -> Option<SubscriptionRequestType> {
-        match bytes {
-            b"0" => Some(SubscriptionRequestType::Snapshot),
-            b"1" => Some(SubscriptionRequestType::SnapshotPlusUpdates),
-            b"2" => Some(SubscriptionRequestType::DisablePreviousSnapshotPlusUpdateRequest),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum TickDirection {
-    PlusTick = b'0' as isize,
-    ZeroPlusTick = b'1' as isize,
-    MinusTick = b'2' as isize,
-    ZeroMinusTick = b'3' as isize,
-}
-
-impl FIXValue for TickDirection {
-    fn from_bytes(bytes: &[u8]) -> Option<TickDirection> {
-        match bytes {
-            b"0" => Some(TickDirection::PlusTick),
-            b"1" => Some(TickDirection::ZeroPlusTick),
-            b"2" => Some(TickDirection::MinusTick),
-            b"3" => Some(TickDirection::ZeroMinusTick),
             _ => None
         }
     }
@@ -2816,50 +1661,6 @@ impl FIXValue for TimeInForce {
             b"4" => Some(TimeInForce::FillOrKill),
             b"5" => Some(TimeInForce::GoodTillCrossing),
             b"6" => Some(TimeInForce::GoodTillDate),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum TradSesMethod {
-    Electronic = b'1' as isize,
-    OpenOutcry = b'2' as isize,
-    TwoParty = b'3' as isize,
-}
-
-impl FIXValue for TradSesMethod {
-    fn from_bytes(bytes: &[u8]) -> Option<TradSesMethod> {
-        match bytes {
-            b"1" => Some(TradSesMethod::Electronic),
-            b"2" => Some(TradSesMethod::OpenOutcry),
-            b"3" => Some(TradSesMethod::TwoParty),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum TradSesMode {
-    Testing = b'1' as isize,
-    Simulated = b'2' as isize,
-    Production = b'3' as isize,
-}
-
-impl FIXValue for TradSesMode {
-    fn from_bytes(bytes: &[u8]) -> Option<TradSesMode> {
-        match bytes {
-            b"1" => Some(TradSesMode::Testing),
-            b"2" => Some(TradSesMode::Simulated),
-            b"3" => Some(TradSesMode::Production),
             _ => None
         }
     }
@@ -2930,72 +1731,6 @@ impl FIXValue for TradeCondition {
             b"L" => Some(TradeCondition::Seller),
             b"M" => Some(TradeCondition::Sold),
             b"N" => Some(TradeCondition::StoppedStock),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum TradeType {
-    Agency = b'A' as isize,
-    VwapGuarantee = b'G' as isize,
-    GuaranteedClose = b'J' as isize,
-    RiskTrade = b'R' as isize,
-}
-
-impl FIXValue for TradeType {
-    fn from_bytes(bytes: &[u8]) -> Option<TradeType> {
-        match bytes {
-            b"A" => Some(TradeType::Agency),
-            b"G" => Some(TradeType::VwapGuarantee),
-            b"J" => Some(TradeType::GuaranteedClose),
-            b"R" => Some(TradeType::RiskTrade),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum UnsolicitedIndicator {
-    No = b'N' as isize,
-    Yes = b'Y' as isize,
-}
-
-impl FIXValue for UnsolicitedIndicator {
-    fn from_bytes(bytes: &[u8]) -> Option<UnsolicitedIndicator> {
-        match bytes {
-            b"N" => Some(UnsolicitedIndicator::No),
-            b"Y" => Some(UnsolicitedIndicator::Yes),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Urgency {
-    Normal = b'0' as isize,
-    Flash = b'1' as isize,
-    Background = b'2' as isize,
-}
-
-impl FIXValue for Urgency {
-    fn from_bytes(bytes: &[u8]) -> Option<Urgency> {
-        match bytes {
-            b"0" => Some(Urgency::Normal),
-            b"1" => Some(Urgency::Flash),
-            b"2" => Some(Urgency::Background),
             _ => None
         }
     }

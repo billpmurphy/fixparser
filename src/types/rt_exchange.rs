@@ -4,6 +4,7 @@ use protocol::FIXValue;
 /// Reuters Exchange Mnemonics representing a market or exchange.
 ///
 /// Used in FIX Protocol Version 4.2.
+#[allow(non_camel_case_types)]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum ReutersExchange {
     /// Abidjan Stock Exchange
@@ -614,19 +615,12 @@ impl FIXValue for ReutersExchange {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use protocol::FIXValue;
+    use types::testutils::{check_decode_encode, check_no_decode};
 
     #[test]
     fn test_rt_exchange() {
-        // decode
-        assert_eq!(ReutersExchange::from_bytes(b"AX").unwrap(), ReutersExchange::AX);
-        assert_eq!(ReutersExchange::from_bytes(b"BO").unwrap(), ReutersExchange::BO);
-        assert!(ReutersExchange::from_bytes(b"UX").is_none());
-
-        // encode
-        let mut v = Vec::new();
-        ReutersExchange::AX.to_bytes(&mut v);
-        ReutersExchange::BO.to_bytes(&mut v);
-        assert_eq!(&v, b"AXBO");
+        check_decode_encode(b"AX", ReutersExchange::AX);
+        check_decode_encode(b"BO", ReutersExchange::BO);
+        check_no_decode::<ReutersExchange>(b"UX");
     }
 }

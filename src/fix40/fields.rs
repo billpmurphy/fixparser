@@ -1,50 +1,23 @@
 use protocol::FIXValue;
+pub use common::AdvSide as AdvSide;
+pub use common::AdvTransType as AdvTransType;
+pub use common::EmailType as EmailType;
+pub use common::EncryptMethod as EncryptMethod;
+pub use common::ExecTransType as ExecTransType;
+pub use common::ForexReq as ForexReq;
+pub use common::GapFillFlag as GapFillFlag;
+pub use common::HandlInst as HandlInst;
+pub use common::IOINaturalFlag as IOINaturalFlag;
+pub use common::IOIQltyInd as IOIQltyInd;
+pub use common::IOIShares as IOIShares;
+pub use common::IOITransType as IOITransType;
+pub use common::LastCapacity as LastCapacity;
+pub use common::LocateReqd as LocateReqd;
+pub use common::PossDupFlag as PossDupFlag;
+pub use common::ProcessCode as ProcessCode;
+pub use common::ReportToExch as ReportToExch;
+pub use common::Urgency as Urgency;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum AdvSide {
-    Buy = b'B' as isize,
-    Sell = b'S' as isize,
-    Trade = b'T' as isize,
-    Cross = b'X' as isize,
-}
-
-impl FIXValue for AdvSide {
-    fn from_bytes(bytes: &[u8]) -> Option<AdvSide> {
-        match bytes {
-            b"B" => Some(AdvSide::Buy),
-            b"S" => Some(AdvSide::Sell),
-            b"T" => Some(AdvSide::Trade),
-            b"X" => Some(AdvSide::Cross),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum AdvTransType {
-    Cancel = b'C' as isize,
-    New = b'N' as isize,
-    Replace = b'R' as isize,
-}
-
-impl FIXValue for AdvTransType {
-    fn from_bytes(bytes: &[u8]) -> Option<AdvTransType> {
-        match bytes {
-            b"C" => Some(AdvTransType::Cancel),
-            b"N" => Some(AdvTransType::New),
-            b"R" => Some(AdvTransType::Replace),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AllocRejCode {
@@ -215,58 +188,6 @@ impl FIXValue for DKReason {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum EmailType {
-    New = b'0' as isize,
-    Reply = b'1' as isize,
-    AdminReply = b'2' as isize,
-}
-
-impl FIXValue for EmailType {
-    fn from_bytes(bytes: &[u8]) -> Option<EmailType> {
-        match bytes {
-            b"0" => Some(EmailType::New),
-            b"1" => Some(EmailType::Reply),
-            b"2" => Some(EmailType::AdminReply),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum EncryptMethod {
-    None = b'0' as isize,
-    Pkcs = b'1' as isize,
-    Des = b'2' as isize,
-    PkcsDes = b'3' as isize,
-    PgpDes = b'4' as isize,
-    PgpDesMd5 = b'5' as isize,
-    PemDesMd5 = b'6' as isize,
-}
-
-impl FIXValue for EncryptMethod {
-    fn from_bytes(bytes: &[u8]) -> Option<EncryptMethod> {
-        match bytes {
-            b"0" => Some(EncryptMethod::None),
-            b"1" => Some(EncryptMethod::Pkcs),
-            b"2" => Some(EncryptMethod::Des),
-            b"3" => Some(EncryptMethod::PkcsDes),
-            b"4" => Some(EncryptMethod::PgpDes),
-            b"5" => Some(EncryptMethod::PgpDesMd5),
-            b"6" => Some(EncryptMethod::PemDesMd5),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ExDestination {
     None = b'0' as isize,
     Posit = b'4' as isize,
@@ -353,92 +274,6 @@ impl FIXValue for ExecInst {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ExecTransType {
-    New = b'0' as isize,
-    Cancel = b'1' as isize,
-    Correct = b'2' as isize,
-    Status = b'3' as isize,
-}
-
-impl FIXValue for ExecTransType {
-    fn from_bytes(bytes: &[u8]) -> Option<ExecTransType> {
-        match bytes {
-            b"0" => Some(ExecTransType::New),
-            b"1" => Some(ExecTransType::Cancel),
-            b"2" => Some(ExecTransType::Correct),
-            b"3" => Some(ExecTransType::Status),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ForexReq {
-    No = b'N' as isize,
-    Yes = b'Y' as isize,
-}
-
-impl FIXValue for ForexReq {
-    fn from_bytes(bytes: &[u8]) -> Option<ForexReq> {
-        match bytes {
-            b"N" => Some(ForexReq::No),
-            b"Y" => Some(ForexReq::Yes),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum GapFillFlag {
-    No = b'N' as isize,
-    Yes = b'Y' as isize,
-}
-
-impl FIXValue for GapFillFlag {
-    fn from_bytes(bytes: &[u8]) -> Option<GapFillFlag> {
-        match bytes {
-            b"N" => Some(GapFillFlag::No),
-            b"Y" => Some(GapFillFlag::Yes),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum HandlInst {
-    AutomatedExecutionOrderPrivateNoBrokerIntervention = b'1' as isize,
-    AutomatedExecutionOrderPublicBrokerInterventionOk = b'2' as isize,
-    ManualOrderBestExecution = b'3' as isize,
-}
-
-impl FIXValue for HandlInst {
-    fn from_bytes(bytes: &[u8]) -> Option<HandlInst> {
-        match bytes {
-            b"1" => Some(HandlInst::AutomatedExecutionOrderPrivateNoBrokerIntervention),
-            b"2" => Some(HandlInst::AutomatedExecutionOrderPublicBrokerInterventionOk),
-            b"3" => Some(HandlInst::ManualOrderBestExecution),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum IDSource {
     Cusip = b'1' as isize,
     Sedol = b'2' as isize,
@@ -465,26 +300,6 @@ impl FIXValue for IDSource {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum IOINaturalFlag {
-    No = b'N' as isize,
-    Yes = b'Y' as isize,
-}
-
-impl FIXValue for IOINaturalFlag {
-    fn from_bytes(bytes: &[u8]) -> Option<IOINaturalFlag> {
-        match bytes {
-            b"N" => Some(IOINaturalFlag::No),
-            b"Y" => Some(IOINaturalFlag::Yes),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum IOIOthSvc {
     Autex = b'A' as isize,
     Bridge = b'B' as isize,
@@ -495,28 +310,6 @@ impl FIXValue for IOIOthSvc {
         match bytes {
             b"A" => Some(IOIOthSvc::Autex),
             b"B" => Some(IOIOthSvc::Bridge),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum IOIQltyInd {
-    High = b'H' as isize,
-    Low = b'L' as isize,
-    Medium = b'M' as isize,
-}
-
-impl FIXValue for IOIQltyInd {
-    fn from_bytes(bytes: &[u8]) -> Option<IOIQltyInd> {
-        match bytes {
-            b"H" => Some(IOIQltyInd::High),
-            b"L" => Some(IOIQltyInd::Low),
-            b"M" => Some(IOIQltyInd::Medium),
             _ => None
         }
     }
@@ -559,94 +352,6 @@ impl FIXValue for IOIQualifier {
             b"V" => Some(IOIQualifier::Versus),
             b"W" => Some(IOIQualifier::Indication),
             b"X" => Some(IOIQualifier::CrossingOpportunity),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum IOIShares {
-    Large = b'L' as isize,
-    Medium = b'M' as isize,
-    Small = b'S' as isize,
-}
-
-impl FIXValue for IOIShares {
-    fn from_bytes(bytes: &[u8]) -> Option<IOIShares> {
-        match bytes {
-            b"L" => Some(IOIShares::Large),
-            b"M" => Some(IOIShares::Medium),
-            b"S" => Some(IOIShares::Small),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum IOITransType {
-    Cancel = b'C' as isize,
-    New = b'N' as isize,
-    Replace = b'R' as isize,
-}
-
-impl FIXValue for IOITransType {
-    fn from_bytes(bytes: &[u8]) -> Option<IOITransType> {
-        match bytes {
-            b"C" => Some(IOITransType::Cancel),
-            b"N" => Some(IOITransType::New),
-            b"R" => Some(IOITransType::Replace),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum LastCapacity {
-    Agent = b'1' as isize,
-    CrossAsAgent = b'2' as isize,
-    CrossAsPrincipal = b'3' as isize,
-    Principal = b'4' as isize,
-}
-
-impl FIXValue for LastCapacity {
-    fn from_bytes(bytes: &[u8]) -> Option<LastCapacity> {
-        match bytes {
-            b"1" => Some(LastCapacity::Agent),
-            b"2" => Some(LastCapacity::CrossAsAgent),
-            b"3" => Some(LastCapacity::CrossAsPrincipal),
-            b"4" => Some(LastCapacity::Principal),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum LocateReqd {
-    No = b'N' as isize,
-    Yes = b'Y' as isize,
-}
-
-impl FIXValue for LocateReqd {
-    fn from_bytes(bytes: &[u8]) -> Option<LocateReqd> {
-        match bytes {
-            b"N" => Some(LocateReqd::No),
-            b"Y" => Some(LocateReqd::Yes),
             _ => None
         }
     }
@@ -871,76 +576,6 @@ impl FIXValue for OrdType {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum PossDupFlag {
-    No = b'N' as isize,
-    Yes = b'Y' as isize,
-}
-
-impl FIXValue for PossDupFlag {
-    fn from_bytes(bytes: &[u8]) -> Option<PossDupFlag> {
-        match bytes {
-            b"N" => Some(PossDupFlag::No),
-            b"Y" => Some(PossDupFlag::Yes),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ProcessCode {
-    Regular = b'0' as isize,
-    SoftDollar = b'1' as isize,
-    StepIn = b'2' as isize,
-    StepOut = b'3' as isize,
-    SoftDollarStepIn = b'4' as isize,
-    SoftDollarStepOut = b'5' as isize,
-    PlanSponsor = b'6' as isize,
-}
-
-impl FIXValue for ProcessCode {
-    fn from_bytes(bytes: &[u8]) -> Option<ProcessCode> {
-        match bytes {
-            b"0" => Some(ProcessCode::Regular),
-            b"1" => Some(ProcessCode::SoftDollar),
-            b"2" => Some(ProcessCode::StepIn),
-            b"3" => Some(ProcessCode::StepOut),
-            b"4" => Some(ProcessCode::SoftDollarStepIn),
-            b"5" => Some(ProcessCode::SoftDollarStepOut),
-            b"6" => Some(ProcessCode::PlanSponsor),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ReportToExch {
-    No = b'N' as isize,
-    Yes = b'Y' as isize,
-}
-
-impl FIXValue for ReportToExch {
-    fn from_bytes(bytes: &[u8]) -> Option<ReportToExch> {
-        match bytes {
-            b"N" => Some(ReportToExch::No),
-            b"Y" => Some(ReportToExch::Yes),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Rule80A {
     AgencySingleOrder = b'A' as isize,
     ProgramOrderNonIndexArbForMemberFirmOrg = b'C' as isize,
@@ -1063,28 +698,6 @@ impl FIXValue for TimeInForce {
             b"4" => Some(TimeInForce::FillOrKill),
             b"5" => Some(TimeInForce::GoodTillCrossing),
             b"6" => Some(TimeInForce::GoodTillDate),
-            _ => None
-        }
-    }
-
-    fn to_bytes(&self, mut v: &mut Vec<u8>) {
-        v.push(*self as u8);
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Urgency {
-    Normal = b'0' as isize,
-    Flash = b'1' as isize,
-    Background = b'2' as isize,
-}
-
-impl FIXValue for Urgency {
-    fn from_bytes(bytes: &[u8]) -> Option<Urgency> {
-        match bytes {
-            b"0" => Some(Urgency::Normal),
-            b"1" => Some(Urgency::Flash),
-            b"2" => Some(Urgency::Background),
             _ => None
         }
     }
